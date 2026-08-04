@@ -1,0 +1,18 @@
+---
+title: "Data Exploration and Wrangling"
+---
+
+## Loading Packages and NASA Data
+
+```{r}
+#| message: false
+#| warning: false
+
+library(tidyverse)
+
+# Read the composite exoplanet data
+nasa_raw <- read_csv("PSCompPars_2026.07.29_10.50.24.csv")
+
+# Quick check on dimensions
+glimpse(nasa_raw)
+```

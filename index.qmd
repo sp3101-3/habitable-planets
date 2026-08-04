@@ -1,0 +1,227 @@
+---
+title: "Finding Earth 2.0: Stellar Predictors of Habitable Planets"
+execute: 
+  echo: false
+---
+
+This is a Quarto website.
+
+```{r}
+#| echo: false
+#| message: false
+library(tidyverse)
+
+ps <- read_csv(
+  "PSCompPars_2026.07.29_10.50.24.csv",
+  skip = 328,
+  col_types = cols(
+    sy_icmagerr2 = col_double()
+  ),
+  show_col_types = FALSE
+)
+
+# Verify the structure and data types for the parsed table.
+glimpse(ps)
+
+# Check for missing values across all columns.
+ps %>%
+  summarise(across(everything(), ~ sum(is.na(.)), .names = "{col}")) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "missing") %>%
+  filter(missing > 0)
+```
+
+```{r}
+# 1. Read the HWC table and extract the 70 planet names
+phl_70_planets <- read_csv("hwc_table_all.csv") %>% 
+  pull(Name)
+
+# 2. Verify we fetched all 70 planets
+length(phl_70_planets)
+head(phl_70_planets)
+
+cat(phl_70_planets, sep = "\n")
+```
+
+```{r}
+#| echo: false
+#| warning: false
+library(tidyverse)
+
+system_data <- ps %>%
+  mutate(
+    is_phl = as.integer(pl_name %in% phl_70_planets),
+    st_lum = (st_rad / 1)^2 * (st_teff / 5772)^4,
+    hz_in = 0.95 * sqrt(st_lum),
+    hz_out = 1.37 * sqrt(st_lum)
+  ) %>%
+  group_by(hostname) %>%
+  summarise(
+    phl_any = as.integer(sum(is_phl, na.rm = TRUE) > 0),
+    st_mass = mean(st_mass, na.rm = TRUE),
+    st_rad = mean(st_rad, na.rm = TRUE),
+    st_teff = mean(st_teff, na.rm = TRUE),
+    st_met = mean(st_met, na.rm = TRUE),
+    sy_kmag = mean(sy_kmag, na.rm = TRUE),
+    st_lum = mean(st_lum, na.rm = TRUE),
+    hz_in = mean(hz_in, na.rm = TRUE),
+    hz_out = mean(hz_out, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  drop_na(st_mass, st_rad, st_teff, st_met, sy_kmag, st_lum, hz_in, hz_out)
+
+write_rds(system_data, "system_data.rds")
+
+print(table(system_data$phl_any))
+```
+
+```{r}
+#| echo: false
+#| warning: false
+library(tidyverse)
+library(pROC)
+
+system_data <- read_rds("system_data.rds")
+
+model <- glm(
+  phl_any ~ st_mass + st_teff + st_met + sy_kmag + st_lum + hz_in + hz_out,
+  data = system_data,
+  family = binomial()
+)
+
+summary(model)
+
+or_ci <- exp(cbind(OR = coef(model), confint(model)))
+print(or_ci)
+
+pred <- predict(model, type = "link", se.fit = TRUE)
+
+system_data <- system_data %>%
+  mutate(
+    pred_link = pred$fit,
+    pred_link_se = pred$se.fit,
+    predicted_prob = plogis(pred_link),
+    prob_lo = plogis(pred_link - 1.96 * pred_link_se),
+    prob_hi = plogis(pred_link + 1.96 * pred_link_se)
+  )
+
+baseline_prob <- mean(system_data$phl_any)
+threshold <- max(0.03, baseline_prob)
+
+system_data <- system_data %>%
+  mutate(
+    pred_class = as.integer(predicted_prob > threshold),
+    correct = pred_class == phl_any
+  )
+
+cat("Baseline probability of phl_any == 1:", round(baseline_prob, 4), "\n")
+cat("Classification threshold used:", threshold, "\n")
+
+roc_obj <- roc(system_data$phl_any, system_data$predicted_prob)
+plot(roc_obj, main = "ROC Curve for PHL Logistic Model")
+cat("AUC:", auc(roc_obj), "\n")
+
+accuracy <- mean(system_data$correct)
+cat("Prediction accuracy:", round(accuracy, 3), "\n")
+
+conf_mat <- table(Predicted = system_data$pred_class, Actual = system_data$phl_any)
+print(conf_mat)
+
+TP <- conf_mat["1", "1"]
+TN <- conf_mat["0", "0"]
+FP <- conf_mat["1", "0"]
+FN <- conf_mat["0", "1"]
+
+sensitivity <- TP / (TP + FN)
+specificity <- TN / (TN + FP)
+precision <- TP / (TP + FP)
+
+cat("Sensitivity (Recall):", round(sensitivity, 3), "\n")
+cat("Specificity:", round(specificity, 3), "\n")
+cat("Precision:", round(precision, 3), "\n")
+
+conf_df <- tibble(
+  class = c("True Positive", "False Positive", "True Negative", "False Negative"),
+  count = c(TP, FP, TN, FN)
+)
+
+# Plot predicted probabilities with 95% CI error bars
+print(
+  ggplot(system_data, aes(x = predicted_prob, y = factor(phl_any), color = correct)) +
+    geom_errorbarh(aes(xmin = prob_lo, xmax = prob_hi), height = 0.2, alpha = 0.5) +
+    geom_point(size = 2) +
+    scale_y_discrete(name = "Actual PHL Class", labels = c("0", "1")) +
+    scale_color_manual(values = c("FALSE" = "red", "TRUE" = "blue")) +
+    labs(
+      x = "Predicted probability of PHL system",
+      color = "Prediction correct",
+      title = "Predicted probabilities with 95% CI"
+    ) +
+    theme_minimal()
+)
+
+accuracy_summary <- system_data %>%
+  count(correct) %>%
+  mutate(correct = if_else(correct, "Correct", "Incorrect"))
+
+print(
+  ggplot(accuracy_summary, aes(x = correct, y = n, fill = correct)) +
+    geom_col() +
+    geom_text(aes(label = n), vjust = -0.5) +
+    labs(
+      x = NULL,
+      y = "Number of systems",
+      title = paste0("Prediction accuracy: ", round(accuracy, 3))
+    ) +
+    theme_minimal() +
+    theme(legend.position = "none")
+)
+
+print(
+  ggplot(conf_df, aes(x = class, y = count, fill = class)) +
+    geom_col() +
+    geom_text(aes(label = count), vjust = -0.5) +
+    labs(
+      x = NULL,
+      y = "Number of systems",
+      title = "Model Confusion Matrix Performance"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "none")
+)
+
+plot_data <- system_data %>%
+  select(st_mass, st_rad, st_teff, st_met, sy_kmag, st_lum, hz_in, hz_out, predicted_prob, phl_any) %>%
+  pivot_longer(
+    cols = -c(predicted_prob, phl_any),
+    names_to = "predictor",
+    values_to = "value"
+  ) %>%
+  mutate(
+    predictor = recode(
+      predictor,
+      st_mass = "Stellar mass",
+      st_rad = "Stellar radius",
+      st_teff = "Stellar temperature",
+      st_met = "Metallicity",
+      sy_kmag = "K-band magnitude",
+      st_lum = "Luminosity",
+      hz_in = "HZ inner boundary",
+      hz_out = "HZ outer boundary"
+    )
+  )
+
+print(
+  ggplot(plot_data, aes(x = value, y = predicted_prob, color = factor(phl_any))) +
+    geom_point(alpha = 0.6, size = 1.8) +
+    geom_smooth(method = "loess", se = FALSE, color = "black") +
+    facet_wrap(~ predictor, scales = "free_x", ncol = 2) +
+    scale_color_manual(values = c("0" = "grey40", "1" = "royalblue"), name = "Actual phl_any") +
+    labs(
+      x = "Predictor value",
+      y = "Predicted probability of phl_any == 1",
+      title = "Predictors vs. modeled probability of a habitable planet system"
+    ) +
+    theme_minimal()
+)
+```
+To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
