@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Finding Earth 2.0: Stellar Predictors of Habitable Planets</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-81e2e0829cbd98249897b488a13756c3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Finding Earth 2.0: Stellar Predictors of Habitable Planets</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Finding Earth 2.0: Stellar Predictors of Habitable Planets</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This is a Quarto website.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 6,324
+Columns: 325
+$ rowid                &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15…
+$ pl_name              &lt;chr&gt; "11 Com b", "11 UMi b", "14 And b", "14 Her b", "…
+$ hostname             &lt;chr&gt; "11 Com", "11 UMi", "14 And", "14 Her", "16 Cyg B…
+$ pl_letter            &lt;chr&gt; "b", "b", "b", "b", "b", "b", "b", "b", "b", "b",…
+$ hd_name              &lt;chr&gt; "HD 107383", "HD 136726", "HD 221345", "HD 145675…
+$ hip_name             &lt;chr&gt; "HIP 60202", "HIP 74793", "HIP 116076", "HIP 7924…
+$ tic_id               &lt;chr&gt; "TIC 72437047", "TIC 230061010", "TIC 333225860",…
+$ gaia_dr2_id          &lt;chr&gt; "Gaia DR2 3946945413106333696", "Gaia DR2 1696798…
+$ gaia_dr3_id          &lt;chr&gt; "Gaia DR3 3946945413106333696", "Gaia DR3 1696798…
+$ sy_snum              &lt;dbl&gt; 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1…
+$ sy_pnum              &lt;dbl&gt; 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1…
+$ sy_mnum              &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ cb_flag              &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0…
+$ discoverymethod      &lt;chr&gt; "Radial Velocity", "Radial Velocity", "Radial Vel…
+$ disc_year            &lt;dbl&gt; 2007, 2009, 2008, 2002, 1996, 2020, 2008, 2008, 2…
+$ disc_refname         &lt;chr&gt; "&lt;a refstr=LIU_ET_AL__2008 href=https://ui.adsabs…
+$ disc_pubdate         &lt;chr&gt; "2008-01", "2009-10", "2008-12", "2003-01", "1997…
+$ disc_locale          &lt;chr&gt; "Ground", "Ground", "Ground", "Ground", "Ground",…
+$ disc_facility        &lt;chr&gt; "Xinglong Station", "Thueringer Landessternwarte …
+$ disc_telescope       &lt;chr&gt; "2.16 m Telescope", "2.0 m Alfred Jensch Telescop…
+$ disc_instrument      &lt;chr&gt; "Coude Echelle Spectrograph", "Coude Echelle Spec…
+$ rv_flag              &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0…
+$ pul_flag             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ ptv_flag             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ tran_flag            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ ast_flag             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ obm_flag             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ micro_flag           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ etv_flag             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ ima_flag             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1…
+$ dkin_flag            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_controv_flag      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_orbper            &lt;dbl&gt; 323.21, 516.22, 186.76, 1766.41, 798.50, 578.38, …
+$ pl_orbpererr1        &lt;dbl&gt; 0.06, 3.20, 0.11, 0.67, 1.00, 2.01, 1.06, NA, 0.0…
+$ pl_orbpererr2        &lt;dbl&gt; -0.05, -3.20, -0.12, -0.68, -1.00, -2.09, -0.92, …
+$ pl_orbperlim         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, NA, NA, NA, NA,…
+$ pl_orbper_reflink    &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ pl_orbsmax           &lt;dbl&gt; 1.178, 1.530, 0.775, 2.839, 1.660, 1.450, 2.476, …
+$ pl_orbsmaxerr1       &lt;dbl&gt; 0.000, 0.070, 0.000, 0.039, 0.030, 0.020, 0.002, …
+$ pl_orbsmaxerr2       &lt;dbl&gt; 0.000, -0.070, 0.000, -0.041, -0.030, -0.020, -0.…
+$ pl_orbsmaxlim        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_orbsmax_reflink   &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ pl_angsep            &lt;dbl&gt; 1.26e+01, 1.22e+01, 1.03e+01, 1.58e+02, 7.85e+01,…
+$ pl_angseperr1        &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_angseperr2        &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_angseplim         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_angsep_reflink    &lt;chr&gt; "&lt;a refstr=CALCULATED_VALUE href=/docs/pscp_calc.…
+$ pl_rade              &lt;dbl&gt; 12.20000, 12.30000, 13.10000, 12.50000, 13.50000,…
+$ pl_radeerr1          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_radeerr2          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_radelim           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_rade_reflink      &lt;chr&gt; "&lt;a refstr=CALCULATED_VALUE href=/docs/pscp_calc.…
+$ pl_radj              &lt;dbl&gt; 1.090, 1.090, 1.160, 1.120, 1.200, 1.150, 1.120, …
+$ pl_radjerr1          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_radjerr2          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_radjlim           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_radj_reflink      &lt;chr&gt; "&lt;a refstr=CALCULATED_VALUE href=/docs/pscp_calc.…
+$ pl_bmasse            &lt;dbl&gt; 4914.8985, 4684.8142, 1131.1513, 2828.6728, 565.7…
+$ pl_bmasseerr1        &lt;dbl&gt; 39.09289, 794.57500, 36.23244, 413.17693, 25.4264…
+$ pl_bmasseerr2        &lt;dbl&gt; -39.72855, -794.57500, -38.77507, -540.30829, -25…
+$ pl_bmasselim         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_bmasse_reflink    &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ pl_bmassj            &lt;dbl&gt; 15.464, 14.740, 3.559, 8.900, 1.780, 4.320, 9.207…
+$ pl_bmassjerr1        &lt;dbl&gt; 0.123, 2.500, 0.114, 1.300, 0.080, 0.150, 0.160, …
+$ pl_bmassjerr2        &lt;dbl&gt; -0.125, -2.500, -0.122, -1.700, -0.080, -0.120, -…
+$ pl_bmassjlim         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_bmassj_reflink    &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ pl_bmassprov         &lt;chr&gt; "Msini", "Msini", "Msini", "Mass", "Msini", "Msin…
+$ pl_dens              &lt;dbl&gt; 14.900, 13.800, 2.760, 7.960, 1.260, 3.510, 8.230…
+$ pl_denserr1          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_denserr2          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_denslim           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_dens_reflink      &lt;chr&gt; "&lt;a refstr=CALCULATED_VALUE href=/docs/pscp_calc.…
+$ pl_orbeccen          &lt;dbl&gt; 0.2380, 0.0800, 0.0000, 0.3683, 0.6800, 0.0600, 0…
+$ pl_orbeccenerr1      &lt;dbl&gt; 0.0070, 0.0300, NA, 0.0029, 0.0200, 0.0300, 0.007…
+$ pl_orbeccenerr2      &lt;dbl&gt; -0.0070, -0.0300, NA, -0.0029, -0.0200, -0.0200, …
+$ pl_orbeccenlim       &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, NA, NA, NA, NA,…
+$ pl_orbeccen_reflink  &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ pl_insol             &lt;dbl&gt; 68.5387, 114.8502, 115.1634, 0.0873, 0.4540, 85.4…
+$ pl_insolerr1         &lt;dbl&gt; 26.7260, 10.7244, 17.4042, 0.0033, 0.0203, 5.4329…
+$ pl_insolerr2         &lt;dbl&gt; -26.7260, -10.7244, -17.4042, -0.0033, -0.0203, -…
+$ pl_insollim          &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, …
+$ pl_insol_reflink     &lt;chr&gt; "&lt;a refstr=CALCULATED_VALUE href=/docs/pscp_calc.…
+$ pl_eqt               &lt;dbl&gt; 803.26, 896.43, 909.92, 147.32, 228.76, 847.51, 4…
+$ pl_eqterr1           &lt;dbl&gt; NA, 48.40, NA, 1.48, 2.32, 13.90, NA, 100.00, NA,…
+$ pl_eqterr2           &lt;dbl&gt; NA, -48.40, NA, -1.48, -2.32, -13.90, NA, -100.00…
+$ pl_eqtlim            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, …
+$ pl_eqt_reflink       &lt;chr&gt; "&lt;a refstr=CALCULATED_VALUE href=/docs/pscp_calc.…
+$ pl_orbincl           &lt;dbl&gt; NA, NA, NA, 146.7, NA, NA, NA, NA, NA, NA, NA, NA…
+$ pl_orbinclerr1       &lt;dbl&gt; NA, NA, NA, 4.584, NA, NA, NA, NA, NA, NA, NA, NA…
+$ pl_orbinclerr2       &lt;dbl&gt; NA, NA, NA, -9.74, NA, NA, NA, NA, NA, NA, NA, NA…
+$ pl_orbincllim        &lt;dbl&gt; NA, NA, NA, 0, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+$ pl_orbincl_reflink   &lt;chr&gt; NA, NA, NA, "&lt;a refstr=BARDALEZ_GAGLIUFFI_ET_AL_2…
+$ pl_tranmid           &lt;dbl&gt; NA, NA, NA, 2456834, 2456937, NA, NA, NA, NA, NA,…
+$ pl_tranmiderr1       &lt;dbl&gt; NA, NA, NA, 1.70, 0.38, NA, NA, NA, NA, NA, NA, N…
+$ pl_tranmiderr2       &lt;dbl&gt; NA, NA, NA, -1.90, -0.38, NA, NA, NA, NA, NA, NA,…
+$ pl_tranmidlim        &lt;dbl&gt; NA, NA, NA, 0, 0, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ pl_tranmid_systemref &lt;chr&gt; NA, NA, NA, "BJD", "BJD", NA, NA, NA, NA, NA, NA,…
+$ pl_tranmid_reflink   &lt;chr&gt; NA, NA, NA, "&lt;a refstr=ROSENTHAL_ET_AL__2021 href…
+$ ttv_flag             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_imppar            &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_impparerr1        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_impparerr2        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_impparlim         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_imppar_reflink    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trandep           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trandeperr1       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trandeperr2       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trandeplim        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trandep_reflink   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trandur           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trandurerr1       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trandurerr2       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trandurlim        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trandur_reflink   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_ratdor            &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_ratdorerr1        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_ratdorerr2        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_ratdorlim         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_ratdor_reflink    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_ratror            &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_ratrorerr1        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_ratrorerr2        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_ratrorlim         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_ratror_reflink    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_occdep            &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_occdeperr1        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_occdeperr2        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_occdeplim         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_occdep_reflink    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_orbtper           &lt;dbl&gt; 2454519, 2452861, 2452853, 2451373, 2450539, 2453…
+$ pl_orbtpererr1       &lt;dbl&gt; 1.50, 2.06, 2.10, 3.60, 1.60, 174.23, 102.90, NA,…
+$ pl_orbtpererr2       &lt;dbl&gt; -1.60, -2.06, -2.10, -3.60, -1.60, -182.91, -118.…
+$ pl_orbtperlim        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, NA, NA, NA, NA,…
+$ pl_orbtper_systemref &lt;chr&gt; "JD", NA, "JD", NA, NA, "JD", "JD", NA, "JD", NA,…
+$ pl_orbtper_reflink   &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ pl_orblper           &lt;dbl&gt; 91.33, 117.63, 0.00, 23.20, 82.74, 57.03, 64.11, …
+$ pl_orblpererr1       &lt;dbl&gt; 1.70, 21.06, NA, 0.56, 0.60, 113.18, 28.80, NA, 8…
+$ pl_orblpererr2       &lt;dbl&gt; -1.80, -21.06, NA, -0.69, -0.60, -106.77, -57.98,…
+$ pl_orblperlim        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, NA, NA, NA, NA,…
+$ pl_orblper_reflink   &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ pl_rvamp             &lt;dbl&gt; 288.63, 189.70, 86.08, 90.00, 50.50, 92.40, 114.9…
+$ pl_rvamperr1         &lt;dbl&gt; 2.39, 7.20, 2.76, 0.50, 1.60, 3.90, 1.98, NA, 2.3…
+$ pl_rvamperr2         &lt;dbl&gt; -2.37, -7.20, -2.95, -0.50, -1.60, -3.84, -0.96, …
+$ pl_rvamplim          &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, NA, NA, NA, NA,…
+$ pl_rvamp_reflink     &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ pl_projobliq         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_projobliqerr1     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_projobliqerr2     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_projobliqlim      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_projobliq_reflink &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trueobliq         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trueobliqerr1     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trueobliqerr2     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trueobliqlim      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_trueobliq_reflink &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_tsm               &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ pl_esm               &lt;dbl&gt; 6.2, 2.4, 13.1, 0.0, 1.2, 2.9, 1.6, 404.0, 33.9, …
+$ st_spectype          &lt;chr&gt; "G8 III", "K4 III", "K0 III", "K0", "G3 V", "K3 I…
+$ st_spectype_reflink  &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ st_teff              &lt;dbl&gt; 4874, 4213, 4888, 5338, 5750, 4157, 4980, 4060, 4…
+$ st_tefferr1          &lt;dbl&gt; NA, 46, NA, 25, 8, 11, NA, 300, NA, 44, 44, 100, …
+$ st_tefferr2          &lt;dbl&gt; NA, -46, NA, -25, -8, -10, NA, -200, NA, -44, -44…
+$ st_tefflim           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, …
+$ st_teff_reflink      &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ st_rad               &lt;dbl&gt; 13.760000, 29.790000, 11.550000, 0.930000, 1.1300…
+$ st_raderr1           &lt;dbl&gt; 2.850000, 2.840000, 1.120000, 0.010000, 0.010000,…
+$ st_raderr2           &lt;dbl&gt; -2.450000, -2.840000, -0.510000, -0.010000, -0.01…
+$ st_radlim            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, …
+$ st_rad_reflink       &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ st_mass              &lt;dbl&gt; 2.090000, 2.780000, 1.780000, 0.970000, 1.080000,…
+$ st_masserr1          &lt;dbl&gt; 0.640000, 0.690000, 0.430000, 0.040000, 0.040000,…
+$ st_masserr2          &lt;dbl&gt; -0.630000, -0.690000, -0.290000, -0.040000, -0.04…
+$ st_masslim           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ st_mass_reflink      &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ st_met               &lt;dbl&gt; -0.260, -0.020, -0.210, 0.430, 0.060, -0.010, -0.…
+$ st_meterr1           &lt;dbl&gt; 0.10, NA, 0.10, 0.07, NA, 0.10, 0.10, NA, 0.10, 0…
+$ st_meterr2           &lt;dbl&gt; -0.10, NA, -0.10, -0.07, NA, -0.10, -0.10, NA, -0…
+$ st_metlim            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, 0, NA, NA, NA, …
+$ st_met_reflink       &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ st_metratio          &lt;chr&gt; "[Fe/H]", "[Fe/H]", "[Fe/H]", "[Fe/H]", "[Fe/H]",…
+$ st_lum               &lt;dbl&gt; 1.97823, 2.42951, 1.83992, -0.15273, 0.09729, 2.2…
+$ st_lumerr1           &lt;dbl&gt; 0.18002, 0.00801, 0.08135, 0.01163, 0.00940, 0.02…
+$ st_lumerr2           &lt;dbl&gt; -0.15868, -0.00816, -0.04991, -0.00980, -0.01338,…
+$ st_lumlim            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, …
+$ st_lum_reflink       &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ st_logg              &lt;dbl&gt; 2.45000, 1.93000, 2.55000, 4.45000, 4.36000, 1.70…
+$ st_loggerr1          &lt;dbl&gt; 0.080000, 0.070000, 0.060000, 0.020000, 0.010000,…
+$ st_loggerr2          &lt;dbl&gt; -0.080000, -0.070000, -0.070000, -0.020000, -0.01…
+$ st_logglim           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, …
+$ st_logg_reflink      &lt;chr&gt; "&lt;a refstr=TENG_ET_AL_2023 href=https://ui.adsabs…
+$ st_age               &lt;dbl&gt; NA, 1.5600, 4.5000, 4.6000, 7.4000, 5.1300, 1.100…
+$ st_ageerr1           &lt;dbl&gt; NA, 0.5400, 1.9000, 3.8000, 0.1000, 2.1200, 0.100…
+$ st_ageerr2           &lt;dbl&gt; NA, -0.5400, -1.9000, -1.3000, -0.1000, -1.3300, …
+$ st_agelim            &lt;dbl&gt; NA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ st_age_reflink       &lt;chr&gt; NA, "&lt;a refstr=DOLLINGER_ET_AL__2009 href=https:/…
+$ st_dens              &lt;dbl&gt; NA, NA, NA, 1.273928, 1.011029, NA, NA, 0.387885,…
+$ st_denserr1          &lt;dbl&gt; NA, NA, NA, 0.349533, 0.292731, NA, NA, 0.180186,…
+$ st_denserr2          &lt;dbl&gt; NA, NA, NA, -0.307280, -0.200810, NA, NA, -0.1069…
+$ st_denslim           &lt;dbl&gt; NA, NA, NA, 0, 0, NA, NA, 0, NA, NA, NA, 0, NA, 0…
+$ st_dens_reflink      &lt;chr&gt; NA, NA, NA, "&lt;a refstr=GOZDZIEWSKI_ET_AL__2008 hr…
+$ st_vsin              &lt;dbl&gt; 1.20, 1.50, 2.60, 1.00, 2.70, 3.98, NA, NA, 3.36,…
+$ st_vsinerr1          &lt;dbl&gt; 1.00, NA, NA, NA, 1.00, 1.11, NA, NA, NA, 0.50, 0…
+$ st_vsinerr2          &lt;dbl&gt; -1.00, NA, NA, NA, -1.00, -1.11, NA, NA, NA, -0.5…
+$ st_vsinlim           &lt;dbl&gt; 0, 0, 0, 1, 0, 0, NA, NA, 0, 0, 0, 0, NA, NA, 0, …
+$ st_vsin_reflink      &lt;chr&gt; "&lt;a refstr=LIU_ET_AL__2008 href=https://ui.adsabs…
+$ st_rotp              &lt;dbl&gt; NA, NA, NA, NA, NA, 329.49, NA, NA, NA, NA, NA, 1…
+$ st_rotperr1          &lt;dbl&gt; NA, NA, NA, NA, NA, 92.4, NA, NA, NA, NA, NA, NA,…
+$ st_rotperr2          &lt;dbl&gt; NA, NA, NA, NA, NA, -92.4, NA, NA, NA, NA, NA, NA…
+$ st_rotplim           &lt;dbl&gt; NA, NA, NA, NA, NA, 1, NA, NA, NA, NA, NA, 0, NA,…
+$ st_rotp_reflink      &lt;chr&gt; NA, NA, NA, NA, NA, "&lt;a refstr=TALA_PINTO_ET_AL__…
+$ st_radv              &lt;dbl&gt; 43.36898, -17.52023, -59.72633, -13.82260, -28.10…
+$ st_radverr1          &lt;dbl&gt; 0.20870, 0.15382, 0.31334, 0.00070, 0.10000, NA, …
+$ st_radverr2          &lt;dbl&gt; -0.20870, -0.15382, -0.31334, -0.00070, -0.10000,…
+$ st_radvlim           &lt;dbl&gt; 0, 0, 0, 0, 0, NA, 0, NA, 0, 0, 0, 0, NA, 0, 0, N…
+$ st_radv_reflink      &lt;chr&gt; "&lt;a refstr=GAIA_COLLABORATION_ET_AL__2018 href=ht…
+$ rastr                &lt;chr&gt; "12h20m42.91s", "15h17m05.90s", "23h31m17.80s", "…
+$ ra                   &lt;dbl&gt; 185.17878, 229.27460, 352.82415, 242.60210, 295.4…
+$ decstr               &lt;chr&gt; "+17d47m35.71s", "+71d49m26.19s", "+39d14m09.01s"…
+$ dec                  &lt;dbl&gt; 17.7932516, 71.8239428, 39.2358367, 43.8163621, 5…
+$ glat                 &lt;dbl&gt; 78.28058, 41.04437, -21.05141, 46.94447, 13.20446…
+$ glon                 &lt;dbl&gt; 264.13775, 108.71900, 106.41269, 69.16849, 83.335…
+$ elat                 &lt;dbl&gt; 18.33392, 74.95821, 38.22901, 62.87885, 69.46803,…
+$ elon                 &lt;dbl&gt; 177.41790, 141.64312, 11.95935, 223.24717, 321.21…
+$ ra_reflink           &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_pm                &lt;dbl&gt; 140.383627, 10.679019, 299.252618, 324.530306, 21…
+$ sy_pmerr1            &lt;dbl&gt; 0.3013952, 0.2188062, 0.1826842, 0.0424169, 0.046…
+$ sy_pmerr2            &lt;dbl&gt; -0.3013952, -0.2188062, -0.1826842, -0.0424169, -…
+$ sy_pmra              &lt;dbl&gt; -109.24100, 3.42996, 287.29200, 132.01900, -134.7…
+$ sy_pmraerr1          &lt;dbl&gt; 0.3161070, 0.2318220, 0.1857800, 0.0385189, 0.049…
+$ sy_pmraerr2          &lt;dbl&gt; -0.3161070, -0.2318220, -0.1857800, -0.0385189, -…
+$ sy_pmdec             &lt;dbl&gt; 88.17010, 10.11320, -83.75820, -296.46400, -162.4…
+$ sy_pmdecerr1         &lt;dbl&gt; 0.2772970, 0.2172590, 0.1412560, 0.0431481, 0.045…
+$ sy_pmdecerr2         &lt;dbl&gt; -0.2772970, -0.2172590, -0.1412560, -0.0431481, -…
+$ sy_pm_reflink        &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_dist              &lt;dbl&gt; 93.18460, 125.32100, 75.43920, 17.93230, 21.13970…
+$ sy_disterr1          &lt;dbl&gt; 1.9238000, 1.9765000, 0.7140000, 0.0073000, 0.011…
+$ sy_disterr2          &lt;dbl&gt; -1.9238000, -1.9765000, -0.7140000, -0.0073000, -…
+$ sy_dist_reflink      &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_plx               &lt;dbl&gt; 10.710400, 7.953880, 13.228900, 55.736300, 47.275…
+$ sy_plxerr1           &lt;dbl&gt; 0.2197390, 0.1248570, 0.1245010, 0.0225960, 0.024…
+$ sy_plxerr2           &lt;dbl&gt; -0.2197390, -0.1248570, -0.1245010, -0.0225960, -…
+$ sy_plx_reflink       &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_bmag              &lt;dbl&gt; 5.726, 6.382, 6.256, 7.495, 6.876, 6.615, 6.430, …
+$ sy_bmagerr1          &lt;dbl&gt; 0.0170000, 0.0450000, 0.0170000, 0.0200000, 0.072…
+$ sy_bmagerr2          &lt;dbl&gt; -0.0170000, -0.0450000, -0.0170000, -0.0200000, -…
+$ sy_bmag_reflink      &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_vmag              &lt;dbl&gt; 4.72307, 5.01300, 5.23133, 6.61935, 6.21500, 5.22…
+$ sy_vmagerr1          &lt;dbl&gt; 0.023, 0.005, 0.023, 0.023, 0.016, 0.023, 0.023, …
+$ sy_vmagerr2          &lt;dbl&gt; -0.023, -0.005, -0.023, -0.023, -0.016, -0.023, -…
+$ sy_vmag_reflink      &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_jmag              &lt;dbl&gt; 2.943, 2.876, 3.019, 5.158, 4.993, 2.943, 4.032, …
+$ sy_jmagerr1          &lt;dbl&gt; 0.334, 0.230, 0.180, 0.029, 0.037, 0.270, 0.236, …
+$ sy_jmagerr2          &lt;dbl&gt; -0.334, -0.230, -0.180, -0.029, -0.037, -0.270, -…
+$ sy_jmag_reflink      &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_hmag              &lt;dbl&gt; 2.484, 2.091, 2.608, 4.803, 4.695, 2.266, 3.440, …
+$ sy_hmagerr1          &lt;dbl&gt; 0.268, 0.194, 0.184, 0.016, 0.036, 0.228, 0.186, …
+$ sy_hmagerr2          &lt;dbl&gt; -0.268, -0.194, -0.184, -0.016, -0.036, -0.228, -…
+$ sy_hmag_reflink      &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_kmag              &lt;dbl&gt; 2.282000, 1.939000, 2.331000, 4.714000, 4.651000,…
+$ sy_kmagerr1          &lt;dbl&gt; 0.346, 0.270, 0.240, 0.016, 0.016, 0.244, 0.204, …
+$ sy_kmagerr2          &lt;dbl&gt; -0.346, -0.270, -0.240, -0.016, -0.016, -0.244, -…
+$ sy_kmag_reflink      &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_umag              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_umagerr1          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_umagerr2          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_umag_reflink      &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_gmag              &lt;dbl&gt; NA, NA, NA, NA, 6.7870, NA, NA, NA, NA, NA, NA, N…
+$ sy_gmagerr1          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_gmagerr2          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_gmag_reflink      &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_rmag              &lt;dbl&gt; NA, NA, NA, NA, 6.1650, NA, NA, NA, NA, NA, NA, N…
+$ sy_rmagerr1          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_rmagerr2          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_rmag_reflink      &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_imag              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_imagerr1          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_imagerr2          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_imag_reflink      &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_zmag              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_zmagerr1          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_zmagerr2          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_zmag_reflink      &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_w1mag             &lt;dbl&gt; 0.639, -0.290, 1.592, 4.676, 4.773, 0.122, 3.370,…
+$ sy_w1magerr1         &lt;dbl&gt; NA, NA, NA, 0.173, 0.236, NA, 0.373, 0.022, NA, 0…
+$ sy_w1magerr2         &lt;dbl&gt; NA, NA, NA, NA, -0.236, NA, -0.373, -0.022, NA, -…
+$ sy_w1mag_reflink     &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_w2mag             &lt;dbl&gt; 0.732, 0.143, 2.545, 4.543, 4.568, 0.752, 2.931, …
+$ sy_w2magerr1         &lt;dbl&gt; NA, NA, 0.524, 0.086, 0.106, NA, 0.416, 0.020, NA…
+$ sy_w2magerr2         &lt;dbl&gt; NA, NA, NA, NA, -0.106, NA, -0.416, -0.020, NA, -…
+$ sy_w2mag_reflink     &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_w3mag             &lt;dbl&gt; 2.358, 1.894, 2.719, 4.721, 4.926, 2.058, 3.355, …
+$ sy_w3magerr1         &lt;dbl&gt; 0.010, 0.012, 0.016, 0.014, 0.033, 0.011, 0.013, …
+$ sy_w3magerr2         &lt;dbl&gt; -0.010, -0.012, NA, NA, -0.033, -0.011, -0.013, -…
+$ sy_w3mag_reflink     &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_w4mag             &lt;dbl&gt; 2.270, 1.787, 2.719, 4.674, 4.713, 1.931, 3.308, …
+$ sy_w4magerr1         &lt;dbl&gt; 0.018, 0.013, NA, NA, 0.028, 0.019, 0.025, 0.370,…
+$ sy_w4magerr2         &lt;dbl&gt; -0.018, -0.013, NA, NA, -0.028, -0.019, -0.025, -…
+$ sy_w4mag_reflink     &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_gaiamag           &lt;dbl&gt; 4.44038, 4.56216, 4.91781, 6.38300, 6.06428, 4.75…
+$ sy_gaiamagerr1       &lt;dbl&gt; 0.0038479, 0.0039035, 0.0028262, 0.0003512, 0.000…
+$ sy_gaiamagerr2       &lt;dbl&gt; -0.0038479, -0.0039035, -0.0028262, -0.0003512, -…
+$ sy_gaiamag_reflink   &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_icmag             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_icmagerr1         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_icmagerr2         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_icmag_reflink     &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_tmag              &lt;dbl&gt; 3.83790, 3.82294, 4.32140, 5.86310, 5.62810, 3.97…
+$ sy_tmagerr1          &lt;dbl&gt; 0.0071000, 0.0075000, 0.0073000, 0.0060000, 0.006…
+$ sy_tmagerr2          &lt;dbl&gt; -0.0071000, -0.0075000, -0.0073000, -0.0060000, -…
+$ sy_tmag_reflink      &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ sy_kepmag            &lt;dbl&gt; NA, NA, NA, NA, 6.095, NA, NA, NA, NA, NA, NA, 14…
+$ sy_kepmagerr1        &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_kepmagerr2        &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ sy_kepmag_reflink    &lt;chr&gt; "&lt;a refstr=STASSUN_ET_AL__2019 href=https://ui.ad…
+$ pl_nnotes            &lt;dbl&gt; 2, 0, 0, 1, 5, 0, 2, 0, 0, 0, 0, 2, 1, 0, 0, 1, 0…
+$ st_nphot             &lt;dbl&gt; 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0…
+$ st_nrvc              &lt;dbl&gt; 2, 1, 1, 4, 4, 0, 1, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0…
+$ st_nspec             &lt;dbl&gt; 0, 0, 0, 1, 3, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0…
+$ pl_nespec            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_ntranspec         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_ndispec           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0…
+$ pl_nobs_jwst_tran    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_nobs_jwst_e       &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ pl_nobs_jwst_pc      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 254 × 2
+   variable          missing
+   &lt;chr&gt;               &lt;int&gt;
+ 1 hd_name              5272
+ 2 hip_name             5169
+ 3 tic_id                296
+ 4 gaia_dr2_id           347
+ 5 gaia_dr3_id           381
+ 6 pl_orbper             343
+ 7 pl_orbpererr1         831
+ 8 pl_orbpererr2         831
+ 9 pl_orbperlim          343
+10 pl_orbper_reflink     343
+# ℹ 244 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 70 Columns: 11
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (3): Name, Type, Detection Method
+dbl (8): Mass&lt;br&gt;(M&lt;sub&gt;E&lt;/sub&gt;), Radius&lt;br&gt;(R&lt;sub&gt;E&lt;/sub&gt;), Flux&lt;br&gt;(S&lt;sub&gt;...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 70</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "TOI-904 c" "TOI-700 e" "TOI-700 d" "GJ 357 d"  "GJ 3293 d" "GJ 180 c" </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>TOI-904 c
+TOI-700 e
+TOI-700 d
+GJ 357 d
+GJ 3293 d
+GJ 180 c
+GJ 433 d
+LP 890-9 c
+LHS 1140 b
+Teegarden's Star b
+Teegarden's Star c
+Kepler-705 b
+Kepler-452 b
+Kepler-1649 c
+K2-9 b
+GJ 367 d
+Kepler-1544 b
+Kepler-1410 b
+Kepler-1540 b
+Kepler-1606 b
+Kepler-1653 b
+HD 216520 c
+Kepler-296 f
+TRAPPIST-1 g
+Kepler-283 c
+K2-18 b
+TRAPPIST-1 d
+GJ 1002 b
+Wolf 1061 c
+GJ 682 b
+HIP 38594 b
+GJ 667 C e
+GJ 667 C f
+TRAPPIST-1 e
+Kepler-1701 b
+Kepler-62 e
+GJ 514 b
+Kepler-62 f
+TOI-715 b
+GJ 667 C c
+K2-288 B b
+Kepler-22 b
+Proxima Cen b
+K2-3 d
+Kepler-174 d
+Kepler-440 b
+Kepler-442 b
+Ross 128 b
+TOI-2257 b
+GJ 229 A c
+GJ 273 b
+GJ 163 c
+TRAPPIST-1 f
+GJ 1061 c
+HN Lib b
+Kepler-1638 b
+Kepler-1652 b
+Kepler-186 f
+Kepler-1229 b
+Kepler-155 c
+GJ 180 d
+GJ 1002 c
+HD 40307 g
+GJ 1061 d
+Kepler-296 e
+K2-72 e
+Kepler-443 b
+K2-332 b
+Ross 508 b
+Wolf 1069 b</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   0    1 
+4095   51 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = phl_any ~ st_mass + st_teff + st_met + sy_kmag + 
+    st_lum + hz_in + hz_out, family = binomial(), data = system_data)
+
+Coefficients: (1 not defined because of singularities)
+              Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept)  0.5159475  3.7079540   0.139   0.8893  
+st_mass     -3.7499622  2.0582299  -1.822   0.0685 .
+st_teff     -0.0004008  0.0013138  -0.305   0.7603  
+st_met      -1.5764147  0.7656537  -2.059   0.0395 *
+sy_kmag     -0.0079282  0.0621089  -0.128   0.8984  
+st_lum      -1.6076050  3.3785680  -0.476   0.6342  
+hz_in        0.8064068  7.7180310   0.104   0.9168  
+hz_out              NA         NA      NA       NA  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 549.97  on 4145  degrees of freedom
+Residual deviance: 388.98  on 4139  degrees of freedom
+AIC: 402.98
+
+Number of Fisher Scoring iterations: 19</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    OR        2.5 %       97.5 %
+(Intercept) 1.67522511 0.3656252254 9.873052e+02
+st_mass     0.02351863 0.0004880907 5.353129e-02
+st_teff     0.99959926 0.9973241904 1.000138e+00
+st_met      0.20671491 0.0473577285 9.437576e-01
+sy_kmag     0.99210314 0.8807394751 1.124531e+00
+st_lum      0.20036693 0.0002111279 2.042540e-01
+hz_in       2.23984531 0.0953205347 2.607009e+06
+hz_out              NA           NA           NA</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Baseline probability of phl_any == 1: 0.0123 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Classification threshold used: 0.03 </code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>AUC: 0.9181067 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Prediction accuracy: 0.907 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Actual
+Predicted    0    1
+        0 3722   14
+        1  373   37</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sensitivity (Recall): 0.725 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Specificity: 0.909 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Precision: 0.09 </code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To learn more about Quarto websites visit <a href="https://quarto.org/docs/websites" class="uri">https://quarto.org/docs/websites</a>.</p>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
