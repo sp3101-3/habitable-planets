@@ -37,8 +37,7 @@ if ("janitor" %in% rownames(installed.packages())) {
 
 df_clean <- raw_data %>%
   mutate(
-    is_eccentric = as.integer(pl_orbeccen >= 0.1),
-    st_mass_logg = st_mass * st_logg
+    is_eccentric = as.integer(pl_orbeccen >= 0.1)
   ) %>%
   select(
     is_eccentric,
@@ -46,7 +45,6 @@ df_clean <- raw_data %>%
     st_mass,
     st_teff,
     st_logg,
-    st_mass_logg,
     sy_pnum
   ) %>%
   drop_na()
@@ -57,7 +55,7 @@ train_data <- df_clean[train_idx, ]
 test_data <- df_clean[-train_idx, ]
 
 logit_model <- glm(
-  is_eccentric ~ st_met + st_mass + st_teff + st_logg + st_mass_logg + sy_pnum,
+  is_eccentric ~ st_met + st_mass + st_teff + st_logg + sy_pnum,
   data = train_data,
   family = binomial(link = "logit")
 )
@@ -74,7 +72,6 @@ test_plot_data <- test_data %>%
 ### Effect estimates
 - Stellar metallicity: odds ratio of 2.40, with a 95% interval from 1.55 to 3.75.
 - Stellar surface gravity: odds ratio of 0.31, with a 95% interval from 0.22 to 0.43.
-- The interaction term between stellar mass and surface gravity was small and not statistically significant.
 
 The figure below summarizes the estimated effects of the variables in the model. Values above 1 indicate higher odds of an eccentric orbit, while values below 1 indicate lower odds, holding the other variables fixed. These estimates are the same values reported in the odds-ratio table on the methodology page.
 
@@ -97,14 +94,12 @@ odds_results <- exp(cbind(OR = coef(logit_model), confint(logit_model))) %>%
       st_mass = "Stellar mass",
       st_teff = "Stellar temperature",
       st_logg = "Stellar surface gravity",
-      st_mass_logg = "Stellar mass × surface gravity",
       sy_pnum = "Planets in system"
     ),
     term = factor(
       term,
       levels = c(
         "Planets in system",
-        "Stellar mass × surface gravity",
         "Stellar surface gravity",
         "Stellar temperature",
         "Stellar mass",
@@ -141,7 +136,7 @@ print(
 )
 ```
 
-Metallicity and surface gravity were the clearest predictors in this model. The interaction term between stellar mass and surface gravity was small and not statistically significant.
+Metallicity and surface gravity were the clearest predictors in this model.
 
 ### Prediction quality
 
@@ -358,8 +353,6 @@ This confusion matrix shows that the model is more successful at identifying cir
 - Stellar metallicity and surface gravity stand out as the strongest predictors in the model.
   - A plausible explanation is that metallicity reflects the chemical enrichment of the protoplanetary disk, which may influence how planets form and how dynamically complex their orbits become.
   - Surface gravity may proxy for stellar structure and evolutionary context, which can shape the broader architecture of the system in ways that affect orbital eccentricity.
-- The interaction term between stellar mass and surface gravity did not add much to the model.
-  - This may indicate that the separate effects of stellar mass and surface gravity are already largely captured by the main terms, or that the available data do not provide enough resolution to reveal a strong joint effect.
 - The results suggest that basic star-system measurements provide useful information, but they do not fully determine eccentricity.
   - This is unsurprising, because orbital eccentricity is also governed by dynamical processes such as planet-planet scattering, secular perturbations, and migration history.
 

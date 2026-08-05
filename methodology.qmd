@@ -8,23 +8,15 @@ In this analysis, I define a binary outcome for orbital eccentricity and use a s
 
 This logistic regression model was fit on the training set to estimate how the selected stellar and system features relate to the probability that a planet is eccentric. The coefficients and p-values show which predictors appear most associated with the outcome, while the odds ratios quantify the strength and direction of each covariate’s association with eccentricity.
 
-The predictors are chosen because they reflect physically meaningful properties of the host star and its planetary system. Stellar metallicity traces the abundance of elements heavier than hydrogen and helium, which can affect the amount of solid material available for planet formation and the architecture of the resulting planetary system. Stellar mass and effective temperature describe the star’s gravitational and radiative environment, while surface gravity measures how strongly the stellar photosphere is bound to the star. Because surface gravity is tied to stellar structure through
-
-$$
-g_\star \propto M_\star,
-$$
-
-it is reasonable to allow the effect of mass to vary with surface gravity. That is why I include a mass-by-surface-gravity interaction term, which lets the model capture a joint dependence between these two stellar properties.
+The predictors are chosen because they reflect physically meaningful properties of the host star and its planetary system. Stellar metallicity traces the abundance of elements heavier than hydrogen and helium, which can affect the amount of solid material available for planet formation and the architecture of the resulting planetary system. Stellar mass and effective temperature describe the star’s gravitational and radiative environment, while surface gravity measures how strongly the stellar photosphere is bound to the star and captures information about the star’s compactness and internal structure.
 
 The model can be written as:
 
 $$
-\operatorname{logit}(p_i)=\beta_0+\beta_1\,\text{st\_met}_i+\beta_2\,\text{st\_mass}_i+\beta_3\,\text{st\_teff}_i+\beta_4\,\text{st\_logg}_i+\beta_5\,\text{st\_mass\_logg}_i+\beta_6\,\text{sy\_pnum}_i,
+\operatorname{logit}(p_i)=\beta_0+\beta_1\,\text{st\_met}_i+\beta_2\,\text{st\_mass}_i+\beta_3\,\text{st\_teff}_i+\beta_4\,\text{st\_logg}_i+\beta_5\,\text{sy\_pnum}_i,
 $$
 
-where the interaction term is defined as the product of stellar mass and surface gravity.
-
-Each covariate carries a distinct astrophysical interpretation. Stellar metallicity is a proxy for the chemical enrichment of the protoplanetary disk. Stellar mass sets the star’s scale and evolutionary context. Effective temperature reflects the star’s radiative output and the thermal environment of the system. Surface gravity tracks the star’s compactness and internal structure. The interaction term allows the influence of stellar mass to change depending on surface gravity, and the number of planets in the system captures the possibility that multiplicity and dynamical interactions may help shape orbital eccentricity.
+Each covariate carries a distinct astrophysical interpretation. Stellar metallicity is a proxy for the chemical enrichment of the protoplanetary disk. Stellar mass sets the star’s scale and evolutionary context. Effective temperature reflects the star’s radiative output and the thermal environment of the system. Surface gravity tracks the star’s compactness and internal structure, while the number of planets in the system captures the possibility that multiplicity and dynamical interactions may help shape orbital eccentricity.
 
 ## Data preparation
 
@@ -44,8 +36,7 @@ raw_data <- read_csv(
 
 df_clean <- raw_data %>%
   mutate(
-    is_eccentric = as.integer(pl_orbeccen >= 0.1),
-    st_mass_logg = st_mass * st_logg
+    is_eccentric = as.integer(pl_orbeccen >= 0.1)
   ) %>%
   select(
     is_eccentric,
@@ -53,7 +44,6 @@ df_clean <- raw_data %>%
     st_mass,
     st_teff,
     st_logg,
-    st_mass_logg,
     sy_pnum
   ) %>%
   drop_na()
@@ -95,7 +85,7 @@ A logistic regression model was fitted to estimate how the selected predictors r
 #| message: false
 #| warning: false
 logit_model <- glm(
-  is_eccentric ~ st_met + st_mass + st_teff + st_logg + st_mass_logg + sy_pnum,
+  is_eccentric ~ st_met + st_mass + st_teff + st_logg + sy_pnum,
   data = train_data,
   family = binomial(link = "logit")
 )

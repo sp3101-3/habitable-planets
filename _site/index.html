@@ -213,7 +213,6 @@ window.Quarto = {
 <ul>
 <li>Stellar metallicity: odds ratio of 2.40, with a 95% interval from 1.55 to 3.75.</li>
 <li>Stellar surface gravity: odds ratio of 0.31, with a 95% interval from 0.22 to 0.43.</li>
-<li>The interaction term between stellar mass and surface gravity was small and not statistically significant.</li>
 </ul>
 <p>The figure below summarizes the estimated effects of the variables in the model. Values above 1 indicate higher odds of an eccentric orbit, while values below 1 indicate lower odds, holding the other variables fixed. These estimates are the same values reported in the odds-ratio table on the methodology page.</p>
 <div class="cell">
@@ -225,7 +224,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Metallicity and surface gravity were the clearest predictors in this model. The interaction term between stellar mass and surface gravity was small and not statistically significant.</p>
+<p>Metallicity and surface gravity were the clearest predictors in this model.</p>
 </section>
 <section id="prediction-quality" class="level3">
 <h3 class="anchored" data-anchor-id="prediction-quality">Prediction quality</h3>
@@ -291,10 +290,6 @@ window.Quarto = {
 <ul>
 <li>A plausible explanation is that metallicity reflects the chemical enrichment of the protoplanetary disk, which may influence how planets form and how dynamically complex their orbits become.</li>
 <li>Surface gravity may proxy for stellar structure and evolutionary context, which can shape the broader architecture of the system in ways that affect orbital eccentricity.</li>
-</ul></li>
-<li>The interaction term between stellar mass and surface gravity did not add much to the model.
-<ul>
-<li>This may indicate that the separate effects of stellar mass and surface gravity are already largely captured by the main terms, or that the available data do not provide enough resolution to reveal a strong joint effect.</li>
 </ul></li>
 <li>The results suggest that basic star-system measurements provide useful information, but they do not fully determine eccentricity.
 <ul>
@@ -389,7 +384,7 @@ window.Quarto = {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/sp3101-3\.github\.io\/habitable-planets\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
