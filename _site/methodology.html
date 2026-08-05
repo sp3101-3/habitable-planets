@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Finding Earth 2.0: Predicting Exoplanet Habitability</title>
+<title>Methodology – Finding Earth 2.0: Predicting Exoplanet Habitability</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -93,11 +93,11 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./methodology.html"> 
+    <a class="nav-link active" href="./methodology.html" aria-current="page"> 
 <span class="menu-text">Methodology</span></a>
   </li>  
   <li class="nav-item">
@@ -115,22 +115,15 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#results" id="toc-results" class="nav-link active" data-scroll-target="#results">Results</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Finding Earth 2.0: Predicting Exoplanet Habitability</h1>
+<h1 class="title">Methodology</h1>
 </div>
 
 
@@ -147,38 +140,76 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This project uses a binary logistic regression model to explore whether a handful of stellar and planetary features can help identify systems that are more likely to host eccentric orbits. Eccentric orbits matter because they often make a planet’s climate less stable over time, which can reduce the long-term chances that liquid water and a habitable environment would persist. In that sense, eccentricity is often treated as a warning sign for habitability.</p>
-<p>Further details on the construction and training of the model can be found under the Methodology tab.</p>
-<section id="results" class="level2">
-<h2 class="anchored" data-anchor-id="results">Results</h2>
-<p>The figure below shows the estimated odds ratios for the covariates in the model. Values above 1 mean a predictor is associated with higher odds of an eccentric orbit, while values below 1 mean lower odds, holding the other variables fixed.</p>
+<p>In this analysis, I define a binary outcome for orbital eccentricity and use a small set of stellar and system-level features to prepare a simple classification task. The goal is to build a clean training and testing split so the model can later be fit and evaluated on whether a planet is more likely to be in an eccentric versus circular orbit.</p>
+<p>This logistic regression model was fit on the training set to estimate how the selected stellar and system features relate to the probability that a planet is eccentric. The coefficients and p-values show which predictors appear most associated with the outcome, while the odds ratios quantify the weight/effect each covariate has on the probability of an orbit being eccentric.</p>
 <div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
+<div class="cell-output cell-output-stdout">
+<pre><code>Training rows: 4102 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Testing rows: 1026 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Training class breakdown:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   0    1 
+3159  943 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Testing class breakdown:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  0   1 
+790 236 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Logistic regression model summary:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = is_eccentric ~ st_met + st_mass + st_teff + st_logg + 
+    sy_pnum, family = binomial(link = "logit"), data = train_data)
+
+Coefficients:
+              Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  4.537e+00  6.073e-01   7.471 7.94e-14 ***
+st_met       8.495e-01  2.109e-01   4.027 5.64e-05 ***
+st_mass     -5.260e-02  1.725e-01  -0.305 0.760373    
+st_teff     -2.029e-04  5.961e-05  -3.403 0.000666 ***
+st_logg     -1.043e+00  1.193e-01  -8.745  &lt; 2e-16 ***
+sy_pnum     -6.172e-02  3.391e-02  -1.820 0.068726 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 4423.1  on 4101  degrees of freedom
+Residual deviance: 4231.1  on 4096  degrees of freedom
+AIC: 4243.1
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Odds ratios with 95% confidence intervals:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    OR      2.5 %      97.5 %
+(Intercept) 93.4436631 28.7844951 312.6942578
+st_met       2.3384146  1.5480326   3.5397116
+st_mass      0.9487619  0.6824269   1.3625715
+st_teff      0.9997971  0.9996782   0.9999126
+st_logg      0.3522779  0.2781759   0.4448599
+sy_pnum      0.9401483  0.8788457   1.0038519</code></pre>
 </div>
 </div>
-</div>
-<p>Metallicity and surface gravity appear to be the clearest predictors in this model. The estimated odds ratio for metallicity is about 2.36, with a 95% confidence interval from about 1.55 to 3.58, and the surface gravity odds ratio is about 0.30, with a 95% confidence interval from about 0.23 to 0.37. Both intervals exclude 1, so these effects are statistically significant. Stellar temperature is also statistically significant, but its effect is very small in practical terms because its odds ratio is essentially 1.00. Stellar mass and the number of planets in the system are not statistically significant at the 0.05 level here.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>This precision-recall curve shows how well the model finds the eccentric cases without producing too many false alarms. Precision means how many of the cases the model labeled as eccentric were actually eccentric. Recall means how many of the real eccentric cases the model was able to catch. In this project, the curve is only modest, which means the model is not very strong at finding eccentric systems while also avoiding mistakes.</p>
-</section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>This project shows that some broad star-system properties can offer clues about whether a planet is more likely to have an eccentric orbit. In particular, stellar metallicity and surface gravity stand out as having a statistically significant relationship with eccentricity in this model. A simple explanation is that these traits may be tied to the way a star and its planets formed, which can influence the shape and stability of planetary orbits. Still, the model does not do a perfect job because eccentricity is shaped by many other forces as well, including the history of the system, the presence of other planets, and the way planets interact over time. That is why a model built only from basic star-system measurements cannot reliably predict eccentricity on its own.</p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

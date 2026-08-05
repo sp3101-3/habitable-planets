@@ -1,0 +1,82 @@
+---
+title: "Methodology"
+execute:
+  echo: false
+---
+
+In this analysis, I define a binary outcome for orbital eccentricity and use a small set of stellar and system-level features to prepare a simple classification task. The goal is to build a clean training and testing split so the model can later be fit and evaluated on whether a planet is more likely to be in an eccentric versus circular orbit.
+
+This logistic regression model was fit on the training set to estimate how the selected stellar and system features relate to the probability that a planet is eccentric. The coefficients and p-values show which predictors appear most associated with the outcome, while the odds ratios quantify the weight/effect each covariate has on the probability of an orbit being eccentric.
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+
+if ("janitor" %in% rownames(installed.packages())) {
+  library(janitor)
+}
+
+raw_data <- read_csv(
+  "PSCompPars_2026.07.29_10.50.24.csv",
+  skip = 328,
+  col_types = cols(sy_icmagerr2 = col_double()),
+  show_col_types = FALSE
+)
+
+if ("janitor" %in% rownames(installed.packages())) {
+  raw_data <- clean_names(raw_data)
+}
+
+df_clean <- raw_data %>%
+  mutate(
+    is_eccentric = as.integer(pl_orbeccen >= 0.1)
+  ) %>%
+  select(
+    is_eccentric,
+    st_met,
+    st_mass,
+    st_teff,
+    st_logg,
+    sy_pnum
+  ) %>%
+  drop_na()
+
+set.seed(123)
+
+if ("rsample" %in% rownames(installed.packages())) {
+  library(rsample)
+
+  split_obj <- initial_split(df_clean, prop = 0.8, strata = is_eccentric)
+  train_data <- training(split_obj)
+  test_data <- testing(split_obj)
+} else {
+  train_idx <- sample(seq_len(nrow(df_clean)), size = floor(0.8 * nrow(df_clean)))
+  train_data <- df_clean[train_idx, ]
+  test_data <- df_clean[-train_idx, ]
+}
+
+cat("Training rows:", nrow(train_data), "\n")
+cat("Testing rows:", nrow(test_data), "\n")
+cat("Training class breakdown:\n")
+print(table(train_data$is_eccentric))
+cat("Testing class breakdown:\n")
+print(table(test_data$is_eccentric))
+
+logit_model <- glm(
+  is_eccentric ~ st_met + st_mass + st_teff + st_logg + sy_pnum,
+  data = train_data,
+  family = binomial(link = "logit")
+)
+
+cat("\nLogistic regression model summary:\n")
+print(summary(logit_model))
+
+or_table <- exp(cbind(
+  OR = coef(logit_model),
+  confint(logit_model)
+))
+
+cat("\nOdds ratios with 95% confidence intervals:\n")
+print(or_table)
+```

@@ -1,227 +1,178 @@
 ---
-title: "Finding Earth 2.0: Stellar Predictors of Habitable Planets"
-execute: 
+title: "Finding Earth 2.0: Predicting Exoplanet Habitability"
+execute:
   echo: false
 ---
 
-This is a Quarto website.
+This project uses a binary logistic regression model to explore whether a handful of stellar and planetary features can help identify systems that are more likely to host eccentric orbits. Eccentric orbits matter because they often make a planet’s climate less stable over time, which can reduce the long-term chances that liquid water and a habitable environment would persist. In that sense, eccentricity is often treated as a warning sign for habitability.
+
+Further details on the construction and training of the model can be found under the Methodology tab.
+
+## Results
 
 ```{r}
-#| echo: false
 #| message: false
+#| warning: false
 library(tidyverse)
 
-ps <- read_csv(
+raw_data <- read_csv(
   "PSCompPars_2026.07.29_10.50.24.csv",
   skip = 328,
-  col_types = cols(
-    sy_icmagerr2 = col_double()
-  ),
+  col_types = cols(sy_icmagerr2 = col_double()),
   show_col_types = FALSE
 )
 
-# Verify the structure and data types for the parsed table.
-glimpse(ps)
+if ("janitor" %in% rownames(installed.packages())) {
+  library(janitor)
+  raw_data <- clean_names(raw_data)
+}
 
-# Check for missing values across all columns.
-ps %>%
-  summarise(across(everything(), ~ sum(is.na(.)), .names = "{col}")) %>%
-  pivot_longer(everything(), names_to = "variable", values_to = "missing") %>%
-  filter(missing > 0)
+df_clean <- raw_data %>%
+  mutate(
+    is_eccentric = as.integer(pl_orbeccen >= 0.1)
+  ) %>%
+  select(
+    is_eccentric,
+    st_met,
+    st_mass,
+    st_teff,
+    st_logg,
+    sy_pnum
+  ) %>%
+  drop_na()
+
+set.seed(123)
+train_idx <- sample(seq_len(nrow(df_clean)), size = floor(0.8 * nrow(df_clean)))
+train_data <- df_clean[train_idx, ]
+test_data <- df_clean[-train_idx, ]
+
+logit_model <- glm(
+  is_eccentric ~ st_met + st_mass + st_teff + st_logg + sy_pnum,
+  data = train_data,
+  family = binomial(link = "logit")
+)
+
+test_plot_data <- test_data %>%
+  mutate(
+    predicted_prob = predict(logit_model, newdata = test_data, type = "response"),
+    predicted_class = as.integer(predicted_prob >= 0.26),
+    actual_class = factor(is_eccentric, levels = c(0, 1), labels = c("Circular", "Eccentric")),
+    prediction_match = predicted_class == is_eccentric
+  )
 ```
 
-```{r}
-# 1. Read the HWC table and extract the 70 planet names
-phl_70_planets <- read_csv("hwc_table_all.csv") %>% 
-  pull(Name)
-
-# 2. Verify we fetched all 70 planets
-length(phl_70_planets)
-head(phl_70_planets)
-
-cat(phl_70_planets, sep = "\n")
-```
+The figure below shows the estimated odds ratios for the covariates in the model. Values above 1 mean a predictor is associated with higher odds of an eccentric orbit, while values below 1 mean lower odds, holding the other variables fixed.
 
 ```{r}
 #| echo: false
 #| warning: false
-library(tidyverse)
-
-system_data <- ps %>%
-  mutate(
-    is_phl = as.integer(pl_name %in% phl_70_planets),
-    st_lum = (st_rad / 1)^2 * (st_teff / 5772)^4,
-    hz_in = 0.95 * sqrt(st_lum),
-    hz_out = 1.37 * sqrt(st_lum)
-  ) %>%
-  group_by(hostname) %>%
-  summarise(
-    phl_any = as.integer(sum(is_phl, na.rm = TRUE) > 0),
-    st_mass = mean(st_mass, na.rm = TRUE),
-    st_rad = mean(st_rad, na.rm = TRUE),
-    st_teff = mean(st_teff, na.rm = TRUE),
-    st_met = mean(st_met, na.rm = TRUE),
-    sy_kmag = mean(sy_kmag, na.rm = TRUE),
-    st_lum = mean(st_lum, na.rm = TRUE),
-    hz_in = mean(hz_in, na.rm = TRUE),
-    hz_out = mean(hz_out, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  drop_na(st_mass, st_rad, st_teff, st_met, sy_kmag, st_lum, hz_in, hz_out)
-
-write_rds(system_data, "system_data.rds")
-
-print(table(system_data$phl_any))
-```
-
-```{r}
-#| echo: false
-#| warning: false
-library(tidyverse)
-library(pROC)
-
-system_data <- read_rds("system_data.rds")
-
-model <- glm(
-  phl_any ~ st_mass + st_teff + st_met + sy_kmag + st_lum + hz_in + hz_out,
-  data = system_data,
-  family = binomial()
-)
-
-summary(model)
-
-or_ci <- exp(cbind(OR = coef(model), confint(model)))
-print(or_ci)
-
-pred <- predict(model, type = "link", se.fit = TRUE)
-
-system_data <- system_data %>%
-  mutate(
-    pred_link = pred$fit,
-    pred_link_se = pred$se.fit,
-    predicted_prob = plogis(pred_link),
-    prob_lo = plogis(pred_link - 1.96 * pred_link_se),
-    prob_hi = plogis(pred_link + 1.96 * pred_link_se)
-  )
-
-baseline_prob <- mean(system_data$phl_any)
-threshold <- max(0.03, baseline_prob)
-
-system_data <- system_data %>%
-  mutate(
-    pred_class = as.integer(predicted_prob > threshold),
-    correct = pred_class == phl_any
-  )
-
-cat("Baseline probability of phl_any == 1:", round(baseline_prob, 4), "\n")
-cat("Classification threshold used:", threshold, "\n")
-
-roc_obj <- roc(system_data$phl_any, system_data$predicted_prob)
-plot(roc_obj, main = "ROC Curve for PHL Logistic Model")
-cat("AUC:", auc(roc_obj), "\n")
-
-accuracy <- mean(system_data$correct)
-cat("Prediction accuracy:", round(accuracy, 3), "\n")
-
-conf_mat <- table(Predicted = system_data$pred_class, Actual = system_data$phl_any)
-print(conf_mat)
-
-TP <- conf_mat["1", "1"]
-TN <- conf_mat["0", "0"]
-FP <- conf_mat["1", "0"]
-FN <- conf_mat["0", "1"]
-
-sensitivity <- TP / (TP + FN)
-specificity <- TN / (TN + FP)
-precision <- TP / (TP + FP)
-
-cat("Sensitivity (Recall):", round(sensitivity, 3), "\n")
-cat("Specificity:", round(specificity, 3), "\n")
-cat("Precision:", round(precision, 3), "\n")
-
-conf_df <- tibble(
-  class = c("True Positive", "False Positive", "True Negative", "False Negative"),
-  count = c(TP, FP, TN, FN)
-)
-
-# Plot predicted probabilities with 95% CI error bars
-print(
-  ggplot(system_data, aes(x = predicted_prob, y = factor(phl_any), color = correct)) +
-    geom_errorbarh(aes(xmin = prob_lo, xmax = prob_hi), height = 0.2, alpha = 0.5) +
-    geom_point(size = 2) +
-    scale_y_discrete(name = "Actual PHL Class", labels = c("0", "1")) +
-    scale_color_manual(values = c("FALSE" = "red", "TRUE" = "blue")) +
-    labs(
-      x = "Predicted probability of PHL system",
-      color = "Prediction correct",
-      title = "Predicted probabilities with 95% CI"
-    ) +
-    theme_minimal()
-)
-
-accuracy_summary <- system_data %>%
-  count(correct) %>%
-  mutate(correct = if_else(correct, "Correct", "Incorrect"))
-
-print(
-  ggplot(accuracy_summary, aes(x = correct, y = n, fill = correct)) +
-    geom_col() +
-    geom_text(aes(label = n), vjust = -0.5) +
-    labs(
-      x = NULL,
-      y = "Number of systems",
-      title = paste0("Prediction accuracy: ", round(accuracy, 3))
-    ) +
-    theme_minimal() +
-    theme(legend.position = "none")
-)
-
-print(
-  ggplot(conf_df, aes(x = class, y = count, fill = class)) +
-    geom_col() +
-    geom_text(aes(label = count), vjust = -0.5) +
-    labs(
-      x = NULL,
-      y = "Number of systems",
-      title = "Model Confusion Matrix Performance"
-    ) +
-    theme_minimal() +
-    theme(legend.position = "none")
-)
-
-plot_data <- system_data %>%
-  select(st_mass, st_rad, st_teff, st_met, sy_kmag, st_lum, hz_in, hz_out, predicted_prob, phl_any) %>%
-  pivot_longer(
-    cols = -c(predicted_prob, phl_any),
-    names_to = "predictor",
-    values_to = "value"
+odds_results <- as.data.frame(exp(cbind(OR = coef(logit_model), confint(logit_model)))) %>%
+  rownames_to_column("term") %>%
+  filter(term != "(Intercept)") %>%
+  rename(
+    odds_ratio = OR,
+    lower = `2.5 %`,
+    upper = `97.5 %`
   ) %>%
   mutate(
-    predictor = recode(
-      predictor,
+    term = recode(
+      term,
+      st_met = "Stellar metallicity",
       st_mass = "Stellar mass",
-      st_rad = "Stellar radius",
       st_teff = "Stellar temperature",
-      st_met = "Metallicity",
-      sy_kmag = "K-band magnitude",
-      st_lum = "Luminosity",
-      hz_in = "HZ inner boundary",
-      hz_out = "HZ outer boundary"
+      st_logg = "Stellar surface gravity",
+      sy_pnum = "Planets in system"
+    ),
+    term = factor(
+      term,
+      levels = rev(c(
+        "Stellar metallicity",
+        "Stellar mass",
+        "Stellar temperature",
+        "Stellar surface gravity",
+        "Planets in system"
+      ))
     )
   )
 
 print(
-  ggplot(plot_data, aes(x = value, y = predicted_prob, color = factor(phl_any))) +
-    geom_point(alpha = 0.6, size = 1.8) +
-    geom_smooth(method = "loess", se = FALSE, color = "black") +
-    facet_wrap(~ predictor, scales = "free_x", ncol = 2) +
-    scale_color_manual(values = c("0" = "grey40", "1" = "royalblue"), name = "Actual phl_any") +
+  ggplot(odds_results, aes(x = term, y = odds_ratio)) +
+    geom_hline(yintercept = 1, linetype = "dashed", color = "#7f8c8d", linewidth = 1, alpha = 0.8) +
+    geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.2, color = "#2563eb", linewidth = 1.1) +
+    geom_point(size = 3.6, color = "#2563eb", fill = "#dbeafe", shape = 21, stroke = 1.1) +
+    coord_flip() +
+    scale_y_log10(limits = c(0.2, 4.5), breaks = c(0.25, 0.5, 1, 2, 4)) +
     labs(
-      x = "Predictor value",
-      y = "Predicted probability of phl_any == 1",
-      title = "Predictors vs. modeled probability of a habitable planet system"
+      title = "Odds ratios for the model covariates",
+      x = NULL,
+      y = "Odds ratio (log scale)"
     ) +
-    theme_minimal()
+    theme_minimal(base_size = 14) +
+    theme(
+      panel.grid.major.y = element_line(color = "#e5e7eb", linewidth = 0.7),
+      panel.grid.major.x = element_line(color = "#f3f4f6", linewidth = 0.6),
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(face = "bold", size = 16, color = "#111827"),
+      axis.text = element_text(color = "#374151", size = 12),
+      axis.title = element_text(color = "#374151", size = 13),
+      plot.background = element_rect(fill = "#f8fafc", color = NA),
+      panel.background = element_rect(fill = "#f8fafc", color = NA),
+      axis.line = element_blank()
+    )
 )
 ```
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+
+Metallicity and surface gravity appear to be the clearest predictors in this model. The estimated odds ratio for metallicity is about 2.36, with a 95% confidence interval from about 1.55 to 3.58, and the surface gravity odds ratio is about 0.30, with a 95% confidence interval from about 0.23 to 0.37. Both intervals exclude 1, so these effects are statistically significant. Stellar temperature is also statistically significant, but its effect is very small in practical terms because its odds ratio is essentially 1.00. Stellar mass and the number of planets in the system are not statistically significant at the 0.05 level here.
+
+```{r}
+#| echo: false
+#| warning: false
+# Compute precision and recall across many thresholds
+thresholds <- sort(unique(c(0, 1, seq(0, 1, by = 0.01), test_plot_data$predicted_prob)))
+
+pr_df <- map_dfr(thresholds, function(threshold) {
+  predicted_positive <- test_plot_data$predicted_prob >= threshold
+  tp <- sum(predicted_positive & test_plot_data$is_eccentric == 1)
+  fp <- sum(predicted_positive & test_plot_data$is_eccentric == 0)
+  fn <- sum(!predicted_positive & test_plot_data$is_eccentric == 1)
+
+  tibble(
+    threshold = threshold,
+    precision = ifelse(tp + fp == 0, NA_real_, tp / (tp + fp)),
+    recall = ifelse(tp + fn == 0, NA_real_, tp / (tp + fn))
+  )
+}) %>%
+  filter(!is.na(precision), !is.na(recall)) %>%
+  arrange(recall, precision)
+
+print(
+  ggplot(pr_df, aes(x = recall, y = precision)) +
+    geom_line(color = "#2563eb", linewidth = 1.4) +
+    geom_area(fill = "#93c5fd", alpha = 0.25) +
+    geom_hline(yintercept = mean(test_plot_data$is_eccentric == 1), linetype = "dashed", color = "#7f8c8d", linewidth = 1) +
+    scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.25)) +
+    scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.25)) +
+    labs(
+      title = "Precision-recall curve",
+      x = "Recall",
+      y = "Precision"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(
+      panel.grid.major = element_line(color = "#e5e7eb", linewidth = 0.7),
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(face = "bold", size = 16, color = "#111827"),
+      axis.text = element_text(color = "#374151", size = 12),
+      axis.title = element_text(color = "#374151", size = 13),
+      plot.background = element_rect(fill = "#f8fafc", color = NA),
+      panel.background = element_rect(fill = "#f8fafc", color = NA),
+      axis.line = element_blank()
+    )
+)
+```
+
+This precision-recall curve shows how well the model finds the eccentric cases without producing too many false alarms. Precision means how many of the cases the model labeled as eccentric were actually eccentric. Recall means how many of the real eccentric cases the model was able to catch. In this project, the curve is only modest, which means the model is not very strong at finding eccentric systems while also avoiding mistakes.
+
+## Conclusion
+
+This project shows that some broad star-system properties can offer clues about whether a planet is more likely to have an eccentric orbit. In particular, stellar metallicity and surface gravity stand out as having a statistically significant relationship with eccentricity in this model. A simple explanation is that these traits may be tied to the way a star and its planets formed, which can influence the shape and stability of planetary orbits. Still, the model does not do a perfect job because eccentricity is shaped by many other forces as well, including the history of the system, the presence of other planets, and the way planets interact over time. That is why a model built only from basic star-system measurements cannot reliably predict eccentricity on its own.
