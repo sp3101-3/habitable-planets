@@ -132,6 +132,10 @@ window.Quarto = {
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./results.html"> 
+<span class="menu-text">Results</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link active" href="./methodology.html" aria-current="page"> 
 <span class="menu-text">Methodology</span></a>
   </li>  
@@ -188,7 +192,7 @@ window.Quarto = {
 
 
 <p>In this analysis, I define a binary outcome for orbital eccentricity and use a small set of stellar and system-level features to prepare a simple classification task. The goal is to build a clean training and testing split so the model can later be fit and evaluated on whether a planet is more likely to be in an eccentric versus circular orbit.</p>
-<p>This logistic regression model was fit on the training set to estimate how the selected stellar and system features relate to the probability that a planet is eccentric. The coefficients and p-values show which predictors appear most associated with the outcome, while the odds ratios quantify the strength and direction of each covariate’s association with eccentricity.</p>
+<p>This logistic regression model was fit on the training set to estimate how the selected stellar and system features relate to the probability that a planet is eccentric. In plain terms, it helps answer: which star-system characteristics are most useful for separating likely eccentric orbits from likely circular ones.</p>
 <p>The predictors are chosen because they reflect physically meaningful properties of the host star and its planetary system. Stellar metallicity traces the abundance of elements heavier than hydrogen and helium, which can affect the amount of solid material available for planet formation and the architecture of the resulting planetary system. Stellar mass and effective temperature describe the star’s gravitational and radiative environment, while surface gravity measures how strongly the stellar photosphere is bound to the star and captures information about the star’s compactness and internal structure.</p>
 <p>The model can be written as:</p>
 <p><span class="math display">\[
@@ -233,10 +237,18 @@ window.Quarto = {
 </section>
 <section id="logistic-regression-model" class="level2">
 <h2 class="anchored" data-anchor-id="logistic-regression-model">Logistic regression model</h2>
-<p>A logistic regression model was fitted to estimate how the selected predictors relate to the probability that an orbit is eccentric. The model uses a logit link, which is appropriate for a binary outcome.</p>
+<p>A logistic regression model was fitted to estimate how the selected predictors relate to the probability that an orbit is eccentric.</p>
+<ul>
+<li>The model turns each system’s measurements into a probability between 0 and 1.</li>
+<li>That makes results easier to use than a strict yes/no label when deciding which systems to prioritize for follow-up.</li>
+</ul>
 <section id="model-summary" class="level3">
 <h3 class="anchored" data-anchor-id="model-summary">Model summary</h3>
-<p>The table below reports the estimated coefficients, standard errors, z-values, p-values, and odds ratios for each predictor. These values help identify which features show the strongest association with eccentricity.</p>
+<p>The table below is the model’s technical report card for each predictor.</p>
+<ul>
+<li>It shows the direction of each effect (pushes predictions up or down) and how stable that effect looks in this sample.</li>
+<li>More stable effects are generally more trustworthy as signals for future screening decisions.</li>
+</ul>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -306,7 +318,12 @@ window.Quarto = {
 </section>
 <section id="odds-ratios-with-confidence-intervals" class="level3">
 <h3 class="anchored" data-anchor-id="odds-ratios-with-confidence-intervals">Odds ratios with confidence intervals</h3>
-<p>The table below shows the exponentiated coefficients as odds ratios, along with 95% confidence intervals. An odds ratio greater than 1 indicates higher odds of an eccentric orbit, while a value below 1 indicates lower odds.</p>
+<p>The table below translates model effects into easier-to-read multipliers.</p>
+<ul>
+<li>Values above 1 suggest a predictor is linked to higher odds of eccentricity, while values below 1 suggest lower odds.</li>
+<li>This makes it easier to compare which predictors have stronger practical influence.</li>
+<li>The confidence interval gives a plausible range for the effect size; narrower ranges suggest greater precision.</li>
+</ul>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">

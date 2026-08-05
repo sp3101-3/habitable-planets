@@ -1,0 +1,437 @@
+---
+title: "Results"
+execute:
+  echo: false
+---
+
+## Model results
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(plotly)
+
+raw_data <- read_csv(
+  "PSCompPars_2026.07.29_10.50.24.csv",
+  skip = 328,
+  col_types = cols(sy_icmagerr2 = col_double()),
+  show_col_types = FALSE
+)
+
+if ("janitor" %in% rownames(installed.packages())) {
+  library(janitor)
+  raw_data <- clean_names(raw_data)
+}
+
+df_clean <- raw_data %>%
+  mutate(
+    is_eccentric = as.integer(pl_orbeccen >= 0.1)
+  ) %>%
+  select(
+    is_eccentric,
+    st_met,
+    st_mass,
+    st_teff,
+    st_logg,
+    sy_pnum
+  ) %>%
+  drop_na()
+
+set.seed(123)
+train_idx <- sample(seq_len(nrow(df_clean)), size = floor(0.8 * nrow(df_clean)))
+train_data <- df_clean[train_idx, ]
+test_data <- df_clean[-train_idx, ]
+
+logit_model <- glm(
+  is_eccentric ~ st_met + st_mass + st_teff + st_logg + sy_pnum,
+  data = train_data,
+  family = binomial(link = "logit")
+)
+
+test_plot_data <- test_data %>%
+  mutate(
+    predicted_prob = predict(logit_model, newdata = test_data, type = "response"),
+    predicted_class = as.integer(predicted_prob >= 0.26),
+    actual_class = factor(is_eccentric, levels = c(0, 1), labels = c("Circular", "Eccentric")),
+    prediction_match = predicted_class == is_eccentric
+  )
+```
+
+### Effect estimates
+- Metal-rich stars were more likely to host planets with eccentric orbits in this dataset. In practical terms, moving up in metallicity was linked to a noticeably higher chance of eccentricity.
+- Stars with higher surface gravity were less likely to be linked with eccentric orbits, suggesting those systems may be dynamically calmer.
+- Because these two star properties are measurable early, they can help prioritize which systems deserve closer follow-up.
+
+The figure below shows which inputs push predictions toward eccentric or circular outcomes. Points above 1 mean a variable tends to raise the chance of eccentricity; points below 1 mean it tends to lower it. The horizontal bars show uncertainty, so wider bars mean less confidence in the exact effect size.
+
+```{r}
+#| echo: false
+#| warning: false
+odds_results <- exp(cbind(OR = coef(logit_model), confint(logit_model))) %>%
+  as.data.frame() %>%
+  rownames_to_column("term") %>%
+  filter(term != "(Intercept)") %>%
+  rename(
+    odds_ratio = OR,
+    lower = `2.5 %`,
+    upper = `97.5 %`
+  ) %>%
+  mutate(
+    term = recode(
+      term,
+      st_met = "Stellar metallicity",
+      st_mass = "Stellar mass",
+      st_teff = "Stellar temperature",
+      st_logg = "Stellar surface gravity",
+      sy_pnum = "Planets in system"
+    ),
+    term = factor(
+      term,
+      levels = c(
+        "Planets in system",
+        "Stellar surface gravity",
+        "Stellar temperature",
+        "Stellar mass",
+        "Stellar metallicity"
+      )
+    )
+  )
+
+print(
+  ggplot(odds_results, aes(x = term, y = odds_ratio)) +
+    geom_hline(yintercept = 1, linetype = "dashed", color = "#7f8c8d", linewidth = 1, alpha = 0.8) +
+    geom_linerange(aes(ymin = lower, ymax = upper), color = "#5ec9ff", linewidth = 1.1) +
+    geom_point(size = 3.6, color = "#5ec9ff", fill = "#10162b", shape = 21, stroke = 1.1) +
+    coord_flip() +
+    scale_y_log10(limits = c(0.2, 4.5), breaks = c(0.25, 0.5, 1, 2, 4)) +
+    labs(
+      title = "Odds ratios for the model covariates",
+      x = NULL,
+      y = "Odds ratio (log scale)"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(
+      text = element_text(family = "Segoe UI", color = "#f4f7ff"),
+      panel.grid.major.y = element_line(color = "#2e3a58", linewidth = 0.7),
+      panel.grid.major.x = element_line(color = "#25324a", linewidth = 0.6),
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(face = "bold", size = 16, color = "#f4f7ff"),
+      axis.text = element_text(color = "#dbeafe", size = 12),
+      axis.title = element_text(color = "#f4f7ff", size = 13),
+      plot.background = element_rect(fill = "#0b1324", color = NA),
+      panel.background = element_rect(fill = "#0b1324", color = NA),
+      axis.line = element_blank()
+    )
+)
+```
+
+Metallicity and surface gravity were the clearest predictors in this model.
+
+### Prediction quality
+
+The next figures focus on how the model separates the two classes and how well it performs on the held-out test set. In this setting, the precision-recall curve is especially informative because it highlights the balance between recovering genuinely eccentric systems and avoiding a large number of false alarms.
+
+```{r}
+#| echo: false
+#| warning: false
+thresholds <- sort(unique(c(0, 1, seq(0, 1, by = 0.01), test_plot_data$predicted_prob)))
+
+pr_df <- map_dfr(thresholds, function(threshold) {
+  predicted_positive <- test_plot_data$predicted_prob >= threshold
+  tp <- sum(predicted_positive & test_plot_data$is_eccentric == 1)
+  fp <- sum(predicted_positive & test_plot_data$is_eccentric == 0)
+  fn <- sum(!predicted_positive & test_plot_data$is_eccentric == 1)
+
+  tibble(
+    threshold = threshold,
+    precision = ifelse(tp + fp == 0, NA_real_, tp / (tp + fp)),
+    recall = ifelse(tp + fn == 0, NA_real_, tp / (tp + fn))
+  )
+}) %>%
+  filter(!is.na(precision), !is.na(recall)) %>%
+  arrange(recall, precision)
+
+pr_auc <- sum(
+  diff(pr_df$recall) * (head(pr_df$precision, -1) + tail(pr_df$precision, -1)) / 2,
+  na.rm = TRUE
+)
+
+baseline_precision <- mean(test_plot_data$is_eccentric == 1)
+
+pr_plot <- plot_ly(
+  pr_df,
+  x = ~recall,
+  y = ~precision,
+  type = "scatter",
+  mode = "lines",
+  line = list(color = "#5ec9ff", width = 2.5),
+  fill = "tozeroy",
+  fillcolor = "rgba(94, 201, 255, 0.18)",
+  customdata = ~threshold,
+  hovertemplate = paste0(
+    "Recall: %{x:.3f}<br>",
+    "Precision: %{y:.3f}<br>",
+    "Threshold: %{customdata:.2f}<extra></extra>"
+  ),
+  name = "PR curve"
+) %>%
+  add_segments(
+    x = 0,
+    xend = 1,
+    y = baseline_precision,
+    yend = baseline_precision,
+    inherit = FALSE,
+    line = list(color = "#d6b4ff", width = 1.2, dash = "dash"),
+    hovertemplate = paste0(
+      "Random-baseline precision: ",
+      scales::number(baseline_precision, accuracy = 0.001),
+      "<extra></extra>"
+    ),
+    name = "Baseline"
+  ) %>%
+  layout(
+    title = list(text = "Precision-recall curve", font = list(color = "#f4f7ff", size = 18)),
+    xaxis = list(
+      title = "Recall",
+      range = c(0, 1),
+      tickvals = seq(0, 1, by = 0.25),
+      color = "#dbeafe",
+      gridcolor = "#2e3a58",
+      zeroline = FALSE
+    ),
+    yaxis = list(
+      title = "Precision",
+      range = c(0, 1),
+      tickvals = seq(0, 1, by = 0.25),
+      color = "#dbeafe",
+      gridcolor = "#2e3a58",
+      zeroline = FALSE
+    ),
+    paper_bgcolor = "#0b1324",
+    plot_bgcolor = "#0b1324",
+    legend = list(font = list(color = "#f4f7ff")),
+    hoverlabel = list(bgcolor = "#10162b", font = list(color = "#f4f7ff"))
+  )
+
+pr_plot
+```
+
+This precision-recall curve shows the trade-off between catching more eccentric planets and making more false alarms.
+
+- AUPRC (area under the precision-recall curve) is `r round(pr_auc, 3)`. It summarizes the whole curve into one score: higher means the model keeps true detections high while limiting false positives across many thresholds.
+- Why AUPRC matters here: eccentric planets are the minority class, so AUPRC is more informative than accuracy alone for judging whether the model is truly useful for discovery.
+- The dashed baseline (`r scales::percent(mean(test_plot_data$is_eccentric == 1), accuracy = 0.1)`) is what you would expect from random guessing at the class prevalence. Performance above that line means the model is adding real signal.
+- At threshold 0.26, precision is `r scales::percent(sum(test_plot_data$predicted_class == 1 & test_plot_data$is_eccentric == 1) / sum(test_plot_data$predicted_class == 1), accuracy = 0.1)` and recall is `r scales::percent(sum(test_plot_data$predicted_class == 1 & test_plot_data$is_eccentric == 1) / sum(test_plot_data$is_eccentric == 1), accuracy = 0.1)`: the model finds some eccentric systems, but misses many and still raises false alarms.
+
+```{r}
+#| echo: false
+#| warning: false
+metric_df <- tibble(
+  metric = c("Accuracy", "Precision", "Sensitivity", "Specificity"),
+  value = c(
+    mean(test_plot_data$prediction_match),
+    sum(test_plot_data$predicted_class == 1 & test_plot_data$is_eccentric == 1) / sum(test_plot_data$predicted_class == 1),
+    sum(test_plot_data$predicted_class == 1 & test_plot_data$is_eccentric == 1) / sum(test_plot_data$is_eccentric == 1),
+    sum(test_plot_data$predicted_class == 0 & test_plot_data$is_eccentric == 0) / sum(test_plot_data$is_eccentric == 0)
+  )
+)
+
+print(
+  ggplot(metric_df, aes(x = reorder(metric, -value), y = value)) +
+    geom_col(fill = "#6d7cff", alpha = 0.95) +
+    geom_text(aes(label = scales::percent(value, accuracy = 0.1)), vjust = -0.4, size = 3.5, color = "#f4f7ff") +
+    scale_y_continuous(limits = c(0, 1), labels = scales::percent_format(accuracy = 1)) +
+    labs(
+      title = "Test-set classification metrics",
+      x = NULL,
+      y = "Value"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(
+      text = element_text(family = "Segoe UI", color = "#f4f7ff"),
+      panel.grid.major.y = element_line(color = "#2e3a58", linewidth = 0.7),
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(face = "bold", size = 16, color = "#f4f7ff"),
+      axis.text = element_text(color = "#dbeafe", size = 12),
+      axis.title = element_text(color = "#f4f7ff", size = 13),
+      plot.background = element_rect(fill = "#0b1324", color = NA),
+      panel.background = element_rect(fill = "#0b1324", color = NA)
+    )
+)
+```
+
+This bar chart gives four different views of model quality, each answering a different practical question.
+
+- Accuracy asks: how often is the model correct overall? This can look better than the model really is when one class is much more common.
+- Precision asks: when the model flags an eccentric orbit, how often is that flag correct?
+- Sensitivity (recall) asks: out of truly eccentric systems, how many did the model successfully catch?
+- Specificity asks: out of truly circular systems, how many did the model correctly leave unflagged?
+
+```{r}
+#| echo: false
+#| warning: false
+class_balance <- df_clean %>%
+  mutate(
+    class_label = factor(is_eccentric, levels = c(0, 1), labels = c("Circular", "Eccentric"))
+  ) %>%
+  count(class_label) %>%
+  mutate(proportion = n / sum(n))
+
+print(
+  ggplot(class_balance, aes(x = class_label, y = proportion, fill = class_label)) +
+    geom_col(alpha = 0.95) +
+    geom_text(aes(label = scales::percent(proportion, accuracy = 0.1)), vjust = -0.4, size = 3.5, color = "#f4f7ff") +
+    scale_y_continuous(limits = c(0, 1), labels = scales::percent_format(accuracy = 1)) +
+    scale_fill_manual(values = c("#6d7cff", "#5ec9ff")) +
+    labs(
+      title = "Class balance in the cleaned dataset",
+      x = NULL,
+      y = "Proportion of observations"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(
+      text = element_text(family = "Segoe UI", color = "#f4f7ff"),
+      panel.grid.major.y = element_line(color = "#2e3a58", linewidth = 0.7),
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(face = "bold", size = 16, color = "#f4f7ff"),
+      axis.text = element_text(color = "#dbeafe", size = 12),
+      axis.title = element_text(color = "#f4f7ff", size = 13),
+      plot.background = element_rect(fill = "#0b1324", color = NA),
+      panel.background = element_rect(fill = "#0b1324", color = NA),
+      legend.position = "none"
+    )
+)
+```
+
+In the cleaned dataset, circular orbits are much more common (`r scales::percent(mean(df_clean$is_eccentric == 0), accuracy = 0.1)`).
+
+- The model therefore sees many more circular examples during training.
+- As a result, performance can look strong even when many of the rarer eccentric systems are still missed.
+
+```{r}
+#| echo: false
+#| warning: false
+prob_density_plot_data <- test_plot_data %>%
+  mutate(
+    actual_class = factor(is_eccentric, levels = c(0, 1), labels = c("Circular", "Eccentric"))
+  )
+
+density_df <- prob_density_plot_data %>%
+  group_by(actual_class) %>%
+  group_modify(~ {
+    d <- density(.x$predicted_prob, from = 0, to = 1, n = 512)
+    tibble(predicted_prob = d$x, density = d$y)
+  }) %>%
+  ungroup()
+
+density_colors <- c("Circular" = "#6d7cff", "Eccentric" = "#5ec9ff")
+
+density_plot <- plot_ly()
+for (cls in names(density_colors)) {
+  class_df <- density_df %>% filter(actual_class == cls)
+  density_plot <- density_plot %>%
+    add_trace(
+      data = class_df,
+      x = ~predicted_prob,
+      y = ~density,
+      type = "scatter",
+      mode = "lines",
+      fill = "tozeroy",
+      name = cls,
+      line = list(color = density_colors[[cls]], width = 2),
+      fillcolor = if (cls == "Circular") "rgba(109, 124, 255, 0.35)" else "rgba(94, 201, 255, 0.35)",
+      hovertemplate = paste0(
+        "Class: ", cls, "<br>",
+        "Predicted probability: %{x:.3f}<br>",
+        "Density: %{y:.3f}<extra></extra>"
+      )
+    )
+}
+
+density_plot <- density_plot %>%
+  layout(
+    title = list(text = "Distribution of predicted probabilities", font = list(color = "#f4f7ff", size = 18)),
+    xaxis = list(
+      title = "Predicted probability of eccentricity",
+      range = c(0, 1),
+      tickvals = seq(0, 1, by = 0.25),
+      color = "#dbeafe",
+      gridcolor = "#2e3a58",
+      zeroline = FALSE
+    ),
+    yaxis = list(
+      title = "Density",
+      color = "#dbeafe",
+      gridcolor = "#2e3a58",
+      zeroline = FALSE
+    ),
+    paper_bgcolor = "#0b1324",
+    plot_bgcolor = "#0b1324",
+    legend = list(title = list(text = "Observed class"), font = list(color = "#f4f7ff")),
+    hoverlabel = list(bgcolor = "#10162b", font = list(color = "#f4f7ff"))
+  )
+
+density_plot
+```
+
+This density plot compares the predicted probabilities for circular and eccentric cases. A better separation between the two groups would show as two more distinct peaks.
+
+```{r}
+#| echo: false
+#| warning: false
+confusion_data <- test_plot_data %>%
+  mutate(
+    actual_class = factor(is_eccentric, levels = c(0, 1), labels = c("Actual: circular", "Actual: eccentric")),
+    predicted_class_label = factor(predicted_class, levels = c(0, 1), labels = c("Predicted: circular", "Predicted: eccentric"))
+  ) %>%
+  count(actual_class, predicted_class_label) %>%
+  complete(actual_class, predicted_class_label, fill = list(n = 0))
+
+print(
+  ggplot(confusion_data, aes(x = predicted_class_label, y = actual_class, fill = n)) +
+    geom_tile(color = "#0b1324", linewidth = 1) +
+    geom_text(aes(label = n), color = "#f4f7ff", size = 4, fontface = "bold") +
+    scale_fill_gradient(low = "#10162b", high = "#5ec9ff") +
+    labs(
+      title = "Confusion matrix for the test set",
+      x = NULL,
+      y = NULL,
+      fill = "Count"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(
+      text = element_text(family = "Segoe UI", color = "#f4f7ff"),
+      panel.grid = element_blank(),
+      plot.title = element_text(face = "bold", size = 16, color = "#f4f7ff"),
+      axis.text = element_text(color = "#dbeafe", size = 12),
+      axis.title = element_text(color = "#f4f7ff", size = 13),
+      plot.background = element_rect(fill = "#0b1324", color = NA),
+      panel.background = element_rect(fill = "#0b1324", color = NA),
+      legend.text = element_text(color = "#f4f7ff"),
+      legend.title = element_text(color = "#f4f7ff")
+    )
+)
+```
+
+This confusion matrix is a direct count of right and wrong predictions in each class.
+
+- Most circular systems are identified correctly, but many eccentric systems are still missed.
+- For a screening tool, missed eccentric systems reduce discovery value, while false alarms increase costly follow-up work.
+
+## Conclusion
+
+### Key takeaways
+- Stellar metallicity and surface gravity stand out as the strongest predictors in the model.
+  - A plausible explanation is that metallicity reflects the chemical enrichment of the protoplanetary disk, which may influence how planets form and how dynamically complex their orbits become.
+  - Surface gravity may proxy for stellar structure and evolutionary context, which can shape the broader architecture of the system in ways that affect orbital eccentricity.
+- The results suggest that basic star-system measurements provide useful information, but they do not fully determine eccentricity.
+  - This is unsurprising, because orbital eccentricity is also governed by dynamical processes such as planet-planet scattering, secular perturbations, and migration history.
+
+### Limitations of the dataset and study
+- The analysis relies on a relatively small and observationally derived dataset, so the conclusions should be viewed as suggestive rather than definitive.
+- The binary outcome is a simplification of a continuous physical phenomenon; some systems near the threshold may be classified somewhat arbitrarily.
+- The model uses only a small set of host-star and system variables, and it does not include other potentially important drivers such as orbital architecture, age, migration history, or planet size.
+- Selection effects in exoplanet surveys may bias the sample toward systems that are easier to detect, which can influence the apparent relationships between stellar properties and orbital eccentricity.
