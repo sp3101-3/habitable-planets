@@ -42,7 +42,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-81e2e0829cbd98249897b488a13756c3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-4bb410f8c34c4008e1412b3063fcb967.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,7 +70,42 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<style>
+:root {
+  --quarto-hl-kw-color: #7dd3fc;
+  --quarto-hl-st-color: #f8fafc;
+}
+</style>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -112,7 +147,7 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -120,13 +155,23 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#results" id="toc-results" class="nav-link active" data-scroll-target="#results">Results</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#background-context" id="toc-background-context" class="nav-link active" data-scroll-target="#background-context">Background &amp; Context</a></li>
+  <li><a href="#study-overview" id="toc-study-overview" class="nav-link" data-scroll-target="#study-overview">Study overview</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
+  <ul class="collapse">
+  <li><a href="#effect-estimates" id="toc-effect-estimates" class="nav-link" data-scroll-target="#effect-estimates">Effect estimates</a></li>
+  <li><a href="#prediction-quality" id="toc-prediction-quality" class="nav-link" data-scroll-target="#prediction-quality">Prediction quality</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
+  <ul class="collapse">
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways">Key takeaways</a></li>
+  <li><a href="#limitations-of-the-dataset-and-study" id="toc-limitations-of-the-dataset-and-study" class="nav-link" data-scroll-target="#limitations-of-the-dataset-and-study">Limitations of the dataset and study</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content column-page-left" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -135,7 +180,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page-left">
 
     
   
@@ -147,11 +192,30 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Eccentric orbits matter because they often make a planet’s climate less stable over time, which can reduce the long-term chances that liquid water and a habitable environment would persist. In that sense, eccentricity is often treated as a warning sign for habitability. To that end, this data analysis project involves the use of a binary logistic regression model to explore whether fundamental stellar system properties can help predict whether exoplanet orbits are eccentric or not. Through this predictive model, I hoped to construct a reliable way to sort exoplanets by orbital eccentricity, allowing astronomers to focus on exoplanets with circular orbits that are more likely to be habitable.</p>
+<section id="background-context" class="level3">
+<h3 class="anchored" data-anchor-id="background-context">Background &amp; Context</h3>
+<p>Eccentric orbits matter because they can make a planet’s climate less stable over time, which can reduce the long-term prospects for liquid water and a sustained habitable surface environment. In a nearly circular orbit, the planet receives a comparatively steady flux of stellar energy, so seasonal forcing is modest. In an eccentric orbit, the planet moves closer to and farther from its host star over the course of the year, and the incoming flux can vary substantially. In a simple orbital approximation, the time-averaged flux scales roughly as <span class="math inline">\(F \propto \frac{L_\star}{a^2\sqrt{1-e^2}}\)</span>, so even moderate eccentricity can amplify seasonal and climatic variability. For habitability studies, that matters because large swings in temperature and water availability can make long-term surface stability more difficult to maintain.</p>
+</section>
+<section id="study-overview" class="level3">
+<h3 class="anchored" data-anchor-id="study-overview">Study overview</h3>
+<ul>
+<li>The goal is to classify exoplanet orbits as eccentric or circular using a small set of stellar and planetary predictors.</li>
+<li>The analysis uses a logistic regression model trained on one subset of the data and evaluated on a separate test set.</li>
+<li>The main question is whether a few broad stellar properties carry enough signal to distinguish the two classes.</li>
+<li>Through this study, I hope to build a reliable model for filtering exoplanets by orbital eccentricity, allowing astronomers to focus on planets with low-eccentricity orbits and thus better candidates for habitability.</li>
+</ul>
 <p>Further details on the construction and training of the model can be found under the Methodology tab.</p>
+</section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
-<p>The figure below summarizes the estimated effects of the variables in the model. Values above 1 indicate higher odds of an eccentric orbit, while values below 1 indicate lower odds, holding the other variables fixed. The estimated odds ratio for metallicity is about 2.39, with a 95% confidence interval from about 1.55 to 3.54. The estimated odds ratio for surface gravity is about 0.35, with a 95% confidence interval from about 0.29 to 0.44. I also included an interaction term between stellar mass and surface gravity to test whether their combined effect differs from their separate effects.</p>
+<section id="effect-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="effect-estimates">Effect estimates</h3>
+<ul>
+<li>Stellar metallicity: odds ratio of 2.40, with a 95% interval from 1.55 to 3.75.</li>
+<li>Stellar surface gravity: odds ratio of 0.31, with a 95% interval from 0.22 to 0.43.</li>
+<li>The interaction term between stellar mass and surface gravity was small and not statistically significant.</li>
+</ul>
+<p>The figure below summarizes the estimated effects of the variables in the model. Values above 1 indicate higher odds of an eccentric orbit, while values below 1 indicate lower odds, holding the other variables fixed. These estimates are the same values reported in the odds-ratio table on the methodology page.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -162,6 +226,10 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <p>Metallicity and surface gravity were the clearest predictors in this model. The interaction term between stellar mass and surface gravity was small and not statistically significant.</p>
+</section>
+<section id="prediction-quality" class="level3">
+<h3 class="anchored" data-anchor-id="prediction-quality">Prediction quality</h3>
+<p>The next figures focus on how the model separates the two classes and how well it performs on the held-out test set. In this setting, the precision-recall curve is especially informative because it highlights the balance between recovering genuinely eccentric systems and avoiding a large number of false alarms.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -172,12 +240,79 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <p>This precision-recall curve summarizes the trade-off between precision and recall across a range of thresholds. The curve indicates that the model has limited ability to identify eccentric cases while avoiding false positives.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This bar chart summarizes the main classification metrics on the test set. It highlights the balance between correctly identifying eccentric cases and avoiding false positives.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In the cleaned dataset, circular orbits are substantially more common than eccentric ones, accounting for about 77% of the observations. That imbalance matters because it means the model is being trained on a sample that is skewed toward the circular class.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This density plot compares the predicted probabilities for circular and eccentric cases. A better separation between the two groups would show as two more distinct peaks.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This confusion matrix shows that the model is more successful at identifying circular orbits than eccentric ones, which is consistent with the lower recall seen in the precision-recall curve.</p>
+</section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>This project shows that some broad star-system properties can offer clues about whether a planet is more likely to have an eccentric orbit. In particular, stellar metallicity and surface gravity stand out as the strongest predictors in the model. The interaction term between stellar mass and surface gravity did not add much to the model. The results suggest that basic star-system measurements provide useful information, but they do not fully determine eccentricity.</p>
+<section id="key-takeaways" class="level3">
+<h3 class="anchored" data-anchor-id="key-takeaways">Key takeaways</h3>
+<ul>
+<li>Stellar metallicity and surface gravity stand out as the strongest predictors in the model.
+<ul>
+<li>A plausible explanation is that metallicity reflects the chemical enrichment of the protoplanetary disk, which may influence how planets form and how dynamically complex their orbits become.</li>
+<li>Surface gravity may proxy for stellar structure and evolutionary context, which can shape the broader architecture of the system in ways that affect orbital eccentricity.</li>
+</ul></li>
+<li>The interaction term between stellar mass and surface gravity did not add much to the model.
+<ul>
+<li>This may indicate that the separate effects of stellar mass and surface gravity are already largely captured by the main terms, or that the available data do not provide enough resolution to reveal a strong joint effect.</li>
+</ul></li>
+<li>The results suggest that basic star-system measurements provide useful information, but they do not fully determine eccentricity.
+<ul>
+<li>This is unsurprising, because orbital eccentricity is also governed by dynamical processes such as planet-planet scattering, secular perturbations, and migration history.</li>
+</ul></li>
+</ul>
+</section>
+<section id="limitations-of-the-dataset-and-study" class="level3">
+<h3 class="anchored" data-anchor-id="limitations-of-the-dataset-and-study">Limitations of the dataset and study</h3>
+<ul>
+<li>The analysis relies on a relatively small and observationally derived dataset, so the conclusions should be viewed as suggestive rather than definitive.</li>
+<li>The binary outcome is a simplification of a continuous physical phenomenon; some systems near the threshold may be classified somewhat arbitrarily.</li>
+<li>The model uses only a small set of host-star and system variables, and it does not include other potentially important drivers such as orbital architecture, age, migration history, or planet size.</li>
+<li>Selection effects in exoplanet surveys may bias the sample toward systems that are easier to detect, which can influence the apparent relationships between stellar properties and orbital eccentricity.</li>
+</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -254,7 +389,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/sp3101-3\.github\.io\/habitable-planets\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

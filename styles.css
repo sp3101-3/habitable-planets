@@ -1,1 +1,105 @@
-/* css styles */
+:root {
+  color-scheme: dark;
+  --bg: #060816;
+  --bg-soft: #10162b;
+  --text: #f4f7ff;
+  --muted: #a8b3cf;
+  --accent: #6d7cff;
+  --accent-2: #5ec9ff;
+  --accent-3: #d6b4ff;
+}
+
+body {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(94, 201, 255, 0.10), transparent 22%),
+    radial-gradient(circle at 85% 10%, rgba(109, 124, 255, 0.12), transparent 18%),
+    radial-gradient(circle at 50% 90%, rgba(214, 180, 255, 0.10), transparent 24%),
+    linear-gradient(135deg, #03040c 0%, #060816 40%, #0d1021 100%);
+  color: var(--text);
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.navbar {
+  background: linear-gradient(90deg, rgba(12, 17, 34, 0.96), rgba(22, 26, 48, 0.94)) !important;
+  border-bottom: 1px solid rgba(94, 201, 255, 0.16);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+}
+
+.navbar .nav-link,
+.navbar-brand {
+  color: #f8f9ff !important;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.92rem;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: var(--accent-2) !important;
+  text-shadow: 0 0 8px rgba(94, 201, 255, 0.25);
+}
+
+.content-block,
+.quarto-title-block,
+.panel-default,
+div.quarto-post-body {
+  background: linear-gradient(145deg, rgba(14, 20, 38, 0.92), rgba(21, 27, 46, 0.9));
+  border: 1px solid rgba(94, 201, 255, 0.14);
+  border-radius: 16px;
+  padding: 1.3rem 1.4rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(6px);
+}
+
+h1, h2, h3 {
+  color: #ffffff;
+  letter-spacing: 0.01em;
+}
+
+h1 {
+  text-shadow: none;
+}
+
+a {
+  color: var(--accent-2);
+}
+
+a:hover {
+  color: #ffffff;
+}
+
+blockquote {
+  border-left: 4px solid var(--accent-3);
+  background: rgba(214, 180, 255, 0.10);
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+}
+
+.table {
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.summary-list {
+  padding-left: 1.1rem;
+}
+
+.summary-list li {
+  margin-bottom: 0.45rem;
+}
+
+.section-callout {
+  background: rgba(94, 201, 255, 0.08);
+  border-left: 4px solid var(--accent-2);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin: 1rem 0;
+}
+
+code, pre {
+  background: rgba(255,255,255,0.06);
+  color: #dbeafe;
+  border-radius: 6px;
+}

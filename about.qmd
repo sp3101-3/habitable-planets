@@ -2,6 +2,6 @@
 title: "About"
 ---
 
-This data analysis was done by Avinesh Saravana, a student in David Kane's Data Science course and astronomy enthusiast.
+This analysis was prepared by Avinesh Saravana, a student in Kane's Data Science Bootcamp and astronomy enthusiast.
 
-The data used in this project comes from the [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/cgi-bin/TblView/nph-tblView?app=ExoTbls&config=PSCompPars).
+The data used in this project come from the [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/cgi-bin/TblView/nph-tblView?app=ExoTbls&config=PSCompPars), a curated and publicly accessible repository of exoplanet and host-star observations maintained by NASA. The archive brings together detections, derived planetary parameters, and stellar properties from a wide range of surveys and observational programs, making it an essential resource for researchers investigating planetary architecture, habitability, and formation pathways. In this project, the archive serves as the source of the system-level and stellar properties used to model orbital eccentricity and evaluate the predictive value of those features.

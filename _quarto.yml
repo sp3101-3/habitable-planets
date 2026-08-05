@@ -14,10 +14,19 @@ website:
 format:
   html:
     theme:
-      - cosmo
+      - quartz
       - brand
     css: styles.css
     toc: true
+    page-layout: full
+    include-in-header:
+      - text: |
+          <style>
+          :root {
+            --quarto-hl-kw-color: #7dd3fc;
+            --quarto-hl-st-color: #f8fafc;
+          }
+          </style>
 
 
 

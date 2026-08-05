@@ -6,16 +6,34 @@ execute:
 
 In this analysis, I define a binary outcome for orbital eccentricity and use a small set of stellar and system-level features to prepare a simple classification task. The goal is to build a clean training and testing split so the model can later be fit and evaluated on whether a planet is more likely to be in an eccentric versus circular orbit.
 
-This logistic regression model was fit on the training set to estimate how the selected stellar and system features relate to the probability that a planet is eccentric. The coefficients and p-values show which predictors appear most associated with the outcome, while the odds ratios quantify the weight/effect each covariate has on the probability of an orbit being eccentric.
+This logistic regression model was fit on the training set to estimate how the selected stellar and system features relate to the probability that a planet is eccentric. The coefficients and p-values show which predictors appear most associated with the outcome, while the odds ratios quantify the strength and direction of each covariate’s association with eccentricity.
+
+The predictors are chosen because they reflect physically meaningful properties of the host star and its planetary system. Stellar metallicity traces the abundance of elements heavier than hydrogen and helium, which can affect the amount of solid material available for planet formation and the architecture of the resulting planetary system. Stellar mass and effective temperature describe the star’s gravitational and radiative environment, while surface gravity measures how strongly the stellar photosphere is bound to the star. Because surface gravity is tied to stellar structure through
+
+$$
+g_\star \propto M_\star,
+$$
+
+it is reasonable to allow the effect of mass to vary with surface gravity. That is why I include a mass-by-surface-gravity interaction term, which lets the model capture a joint dependence between these two stellar properties.
+
+The model can be written as:
+
+$$
+\operatorname{logit}(p_i)=\beta_0+\beta_1\,\text{st\_met}_i+\beta_2\,\text{st\_mass}_i+\beta_3\,\text{st\_teff}_i+\beta_4\,\text{st\_logg}_i+\beta_5\,\text{st\_mass\_logg}_i+\beta_6\,\text{sy\_pnum}_i,
+$$
+
+where the interaction term is defined as the product of stellar mass and surface gravity.
+
+Each covariate carries a distinct astrophysical interpretation. Stellar metallicity is a proxy for the chemical enrichment of the protoplanetary disk. Stellar mass sets the star’s scale and evolutionary context. Effective temperature reflects the star’s radiative output and the thermal environment of the system. Surface gravity tracks the star’s compactness and internal structure. The interaction term allows the influence of stellar mass to change depending on surface gravity, and the number of planets in the system captures the possibility that multiplicity and dynamical interactions may help shape orbital eccentricity.
+
+## Data preparation
+
+This step creates the modeling dataset by converting orbital eccentricity into a binary response and selecting the predictors used in the model. The outcome is coded as 1 when the orbital eccentricity is at least 0.1 and 0 as otherwise.
 
 ```{r}
 #| message: false
 #| warning: false
 library(tidyverse)
-
-if ("janitor" %in% rownames(installed.packages())) {
-  library(janitor)
-}
 
 raw_data <- read_csv(
   "PSCompPars_2026.07.29_10.50.24.csv",
@@ -24,13 +42,10 @@ raw_data <- read_csv(
   show_col_types = FALSE
 )
 
-if ("janitor" %in% rownames(installed.packages())) {
-  raw_data <- clean_names(raw_data)
-}
-
 df_clean <- raw_data %>%
   mutate(
-    is_eccentric = as.integer(pl_orbeccen >= 0.1)
+    is_eccentric = as.integer(pl_orbeccen >= 0.1),
+    st_mass_logg = st_mass * st_logg
   ) %>%
   select(
     is_eccentric,
@@ -38,45 +53,86 @@ df_clean <- raw_data %>%
     st_mass,
     st_teff,
     st_logg,
+    st_mass_logg,
     sy_pnum
   ) %>%
   drop_na()
+```
 
+## Train-test split
+
+The data were split into training and testing sets so the model could be fit and then evaluated on unseen observations. This helps reduce the risk of overfitting and provides a more realistic check on predictive performance.
+
+```{r}
+#| message: false
+#| warning: false
 set.seed(123)
 
-if ("rsample" %in% rownames(installed.packages())) {
-  library(rsample)
+train_idx <- sample(seq_len(nrow(df_clean)), size = floor(0.8 * nrow(df_clean)))
+train_data <- df_clean[train_idx, ]
+test_data <- df_clean[-train_idx, ]
+```
 
-  split_obj <- initial_split(df_clean, prop = 0.8, strata = is_eccentric)
-  train_data <- training(split_obj)
-  test_data <- testing(split_obj)
-} else {
-  train_idx <- sample(seq_len(nrow(df_clean)), size = floor(0.8 * nrow(df_clean)))
-  train_data <- df_clean[train_idx, ]
-  test_data <- df_clean[-train_idx, ]
-}
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+train_summary <- tibble(
+  Set = c("Training", "Testing"),
+  Rows = c(nrow(train_data), nrow(test_data)),
+  Eccentric = c(sum(train_data$is_eccentric == 1), sum(test_data$is_eccentric == 1)),
+  Circular = c(sum(train_data$is_eccentric == 0), sum(test_data$is_eccentric == 0))
+)
 
-cat("Training rows:", nrow(train_data), "\n")
-cat("Testing rows:", nrow(test_data), "\n")
-cat("Training class breakdown:\n")
-print(table(train_data$is_eccentric))
-cat("Testing class breakdown:\n")
-print(table(test_data$is_eccentric))
+knitr::kable(train_summary, col.names = c("Set", "Rows", "Eccentric", "Circular"))
+```
 
+## Logistic regression model
+
+A logistic regression model was fitted to estimate how the selected predictors relate to the probability that an orbit is eccentric. The model uses a logit link, which is appropriate for a binary outcome.
+
+```{r}
+#| message: false
+#| warning: false
 logit_model <- glm(
-  is_eccentric ~ st_met + st_mass + st_teff + st_logg + sy_pnum,
+  is_eccentric ~ st_met + st_mass + st_teff + st_logg + st_mass_logg + sy_pnum,
   data = train_data,
   family = binomial(link = "logit")
 )
+```
 
-cat("\nLogistic regression model summary:\n")
-print(summary(logit_model))
+### Model summary
 
-or_table <- exp(cbind(
-  OR = coef(logit_model),
-  confint(logit_model)
-))
+The table below reports the estimated coefficients, standard errors, z-values, p-values, and odds ratios for each predictor. These values help identify which features show the strongest association with eccentricity.
 
-cat("\nOdds ratios with 95% confidence intervals:\n")
-print(or_table)
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+model_summary <- summary(logit_model)$coefficients %>%
+  as.data.frame() %>%
+  rownames_to_column("term") %>%
+  mutate(
+    odds_ratio = exp(Estimate),
+    z_value = `z value`,
+    p_value = `Pr(>|z|)`
+  ) %>%
+  select(term, estimate = Estimate, std_error = `Std. Error`, z_value, p_value, odds_ratio)
+
+knitr::kable(model_summary, digits = 4)
+```
+
+### Odds ratios with confidence intervals
+
+The table below shows the exponentiated coefficients as odds ratios, along with 95% confidence intervals. An odds ratio greater than 1 indicates higher odds of an eccentric orbit, while a value below 1 indicates lower odds.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+or_table <- exp(cbind(OR = coef(logit_model), confint(logit_model))) %>%
+  as.data.frame() %>%
+  rownames_to_column("term")
+
+knitr::kable(or_table, digits = 4)
 ```

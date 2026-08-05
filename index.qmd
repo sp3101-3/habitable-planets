@@ -4,7 +4,15 @@ execute:
   echo: false
 ---
 
-Eccentric orbits matter because they often make a planet’s climate less stable over time, which can reduce the long-term chances that liquid water and a habitable environment would persist. In that sense, eccentricity is often treated as a warning sign for habitability. To that end, this data analysis project involves the use of a binary logistic regression model to explore whether fundamental stellar system properties can help predict whether exoplanet orbits are eccentric or not. Through this predictive model, I hoped to construct a reliable way to sort exoplanets by orbital eccentricity, allowing astronomers to focus on exoplanets with circular orbits that are more likely to be habitable.
+### Background & Context
+
+Eccentric orbits matter because they can make a planet’s climate less stable over time, which can reduce the long-term prospects for liquid water and a sustained habitable surface environment. In a nearly circular orbit, the planet receives a comparatively steady flux of stellar energy, so seasonal forcing is modest. In an eccentric orbit, the planet moves closer to and farther from its host star over the course of the year, and the incoming flux can vary substantially. In a simple orbital approximation, the time-averaged flux scales roughly as $F \propto \frac{L_\star}{a^2\sqrt{1-e^2}}$, so even moderate eccentricity can amplify seasonal and climatic variability. For habitability studies, that matters because large swings in temperature and water availability can make long-term surface stability more difficult to maintain.
+
+### Study overview
+- The goal is to classify exoplanet orbits as eccentric or circular using a small set of stellar and planetary predictors.
+- The analysis uses a logistic regression model trained on one subset of the data and evaluated on a separate test set.
+- The main question is whether a few broad stellar properties carry enough signal to distinguish the two classes.
+- Through this study, I hope to build a reliable model for filtering exoplanets by orbital eccentricity, allowing astronomers to focus on planets with low-eccentricity orbits and thus better candidates for habitability.
 
 Further details on the construction and training of the model can be found under the Methodology tab.
 
@@ -63,12 +71,18 @@ test_plot_data <- test_data %>%
   )
 ```
 
-The figure below summarizes the estimated effects of the variables in the model. Values above 1 indicate higher odds of an eccentric orbit, while values below 1 indicate lower odds, holding the other variables fixed. The estimated odds ratio for metallicity is about 2.39, with a 95% confidence interval from about 1.55 to 3.54. The estimated odds ratio for surface gravity is about 0.35, with a 95% confidence interval from about 0.29 to 0.44. I also included an interaction term between stellar mass and surface gravity to test whether their combined effect differs from their separate effects.
+### Effect estimates
+- Stellar metallicity: odds ratio of 2.40, with a 95% interval from 1.55 to 3.75.
+- Stellar surface gravity: odds ratio of 0.31, with a 95% interval from 0.22 to 0.43.
+- The interaction term between stellar mass and surface gravity was small and not statistically significant.
+
+The figure below summarizes the estimated effects of the variables in the model. Values above 1 indicate higher odds of an eccentric orbit, while values below 1 indicate lower odds, holding the other variables fixed. These estimates are the same values reported in the odds-ratio table on the methodology page.
 
 ```{r}
 #| echo: false
 #| warning: false
-odds_results <- as.data.frame(exp(cbind(OR = coef(logit_model), confint(logit_model)))) %>%
+odds_results <- exp(cbind(OR = coef(logit_model), confint(logit_model))) %>%
+  as.data.frame() %>%
   rownames_to_column("term") %>%
   filter(term != "(Intercept)") %>%
   rename(
@@ -88,22 +102,22 @@ odds_results <- as.data.frame(exp(cbind(OR = coef(logit_model), confint(logit_mo
     ),
     term = factor(
       term,
-      levels = rev(c(
-        "Stellar metallicity",
-        "Stellar mass",
-        "Stellar temperature",
-        "Stellar surface gravity",
+      levels = c(
+        "Planets in system",
         "Stellar mass × surface gravity",
-        "Planets in system"
-      ))
+        "Stellar surface gravity",
+        "Stellar temperature",
+        "Stellar mass",
+        "Stellar metallicity"
+      )
     )
   )
 
 print(
   ggplot(odds_results, aes(x = term, y = odds_ratio)) +
     geom_hline(yintercept = 1, linetype = "dashed", color = "#7f8c8d", linewidth = 1, alpha = 0.8) +
-    geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.2, color = "#2563eb", linewidth = 1.1) +
-    geom_point(size = 3.6, color = "#2563eb", fill = "#dbeafe", shape = 21, stroke = 1.1) +
+    geom_linerange(aes(ymin = lower, ymax = upper), color = "#5ec9ff", linewidth = 1.1) +
+    geom_point(size = 3.6, color = "#5ec9ff", fill = "#10162b", shape = 21, stroke = 1.1) +
     coord_flip() +
     scale_y_log10(limits = c(0.2, 4.5), breaks = c(0.25, 0.5, 1, 2, 4)) +
     labs(
@@ -113,20 +127,25 @@ print(
     ) +
     theme_minimal(base_size = 14) +
     theme(
-      panel.grid.major.y = element_line(color = "#e5e7eb", linewidth = 0.7),
-      panel.grid.major.x = element_line(color = "#f3f4f6", linewidth = 0.6),
+      text = element_text(family = "Segoe UI", color = "#f4f7ff"),
+      panel.grid.major.y = element_line(color = "#2e3a58", linewidth = 0.7),
+      panel.grid.major.x = element_line(color = "#25324a", linewidth = 0.6),
       panel.grid.minor = element_blank(),
-      plot.title = element_text(face = "bold", size = 16, color = "#111827"),
-      axis.text = element_text(color = "#374151", size = 12),
-      axis.title = element_text(color = "#374151", size = 13),
-      plot.background = element_rect(fill = "#f8fafc", color = NA),
-      panel.background = element_rect(fill = "#f8fafc", color = NA),
+      plot.title = element_text(face = "bold", size = 16, color = "#f4f7ff"),
+      axis.text = element_text(color = "#dbeafe", size = 12),
+      axis.title = element_text(color = "#f4f7ff", size = 13),
+      plot.background = element_rect(fill = "#0b1324", color = NA),
+      panel.background = element_rect(fill = "#0b1324", color = NA),
       axis.line = element_blank()
     )
 )
 ```
 
 Metallicity and surface gravity were the clearest predictors in this model. The interaction term between stellar mass and surface gravity was small and not statistically significant.
+
+### Prediction quality
+
+The next figures focus on how the model separates the two classes and how well it performs on the held-out test set. In this setting, the precision-recall curve is especially informative because it highlights the balance between recovering genuinely eccentric systems and avoiding a large number of false alarms.
 
 ```{r}
 #| echo: false
@@ -151,9 +170,9 @@ pr_df <- map_dfr(thresholds, function(threshold) {
 
 print(
   ggplot(pr_df, aes(x = recall, y = precision)) +
-    geom_line(color = "#2563eb", linewidth = 1.4) +
-    geom_area(fill = "#93c5fd", alpha = 0.25) +
-    geom_hline(yintercept = mean(test_plot_data$is_eccentric == 1), linetype = "dashed", color = "#7f8c8d", linewidth = 1) +
+    geom_line(color = "#5ec9ff", linewidth = 1.4) +
+    geom_area(fill = "#5ec9ff", alpha = 0.18) +
+    geom_hline(yintercept = mean(test_plot_data$is_eccentric == 1), linetype = "dashed", color = "#d6b4ff", linewidth = 1) +
     scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.25)) +
     scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.25)) +
     labs(
@@ -163,13 +182,14 @@ print(
     ) +
     theme_minimal(base_size = 14) +
     theme(
-      panel.grid.major = element_line(color = "#e5e7eb", linewidth = 0.7),
+      text = element_text(family = "Segoe UI", color = "#f4f7ff"),
+      panel.grid.major = element_line(color = "#2e3a58", linewidth = 0.7),
       panel.grid.minor = element_blank(),
-      plot.title = element_text(face = "bold", size = 16, color = "#111827"),
-      axis.text = element_text(color = "#374151", size = 12),
-      axis.title = element_text(color = "#374151", size = 13),
-      plot.background = element_rect(fill = "#f8fafc", color = NA),
-      panel.background = element_rect(fill = "#f8fafc", color = NA),
+      plot.title = element_text(face = "bold", size = 16, color = "#f4f7ff"),
+      axis.text = element_text(color = "#dbeafe", size = 12),
+      axis.title = element_text(color = "#f4f7ff", size = 13),
+      plot.background = element_rect(fill = "#0b1324", color = NA),
+      panel.background = element_rect(fill = "#0b1324", color = NA),
       axis.line = element_blank()
     )
 )
@@ -177,6 +197,174 @@ print(
 
 This precision-recall curve summarizes the trade-off between precision and recall across a range of thresholds. The curve indicates that the model has limited ability to identify eccentric cases while avoiding false positives.
 
+```{r}
+#| echo: false
+#| warning: false
+metric_df <- tibble(
+  metric = c("Accuracy", "Precision", "Sensitivity", "Specificity"),
+  value = c(
+    mean(test_plot_data$prediction_match),
+    sum(test_plot_data$predicted_class == 1 & test_plot_data$is_eccentric == 1) / sum(test_plot_data$predicted_class == 1),
+    sum(test_plot_data$predicted_class == 1 & test_plot_data$is_eccentric == 1) / sum(test_plot_data$is_eccentric == 1),
+    sum(test_plot_data$predicted_class == 0 & test_plot_data$is_eccentric == 0) / sum(test_plot_data$is_eccentric == 0)
+  )
+)
+
+print(
+  ggplot(metric_df, aes(x = reorder(metric, -value), y = value)) +
+    geom_col(fill = "#6d7cff", alpha = 0.95) +
+    geom_text(aes(label = scales::percent(value, accuracy = 0.1)), vjust = -0.4, size = 3.5, color = "#f4f7ff") +
+    scale_y_continuous(limits = c(0, 1), labels = scales::percent_format(accuracy = 1)) +
+    labs(
+      title = "Test-set classification metrics",
+      x = NULL,
+      y = "Value"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(
+      text = element_text(family = "Segoe UI", color = "#f4f7ff"),
+      panel.grid.major.y = element_line(color = "#2e3a58", linewidth = 0.7),
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(face = "bold", size = 16, color = "#f4f7ff"),
+      axis.text = element_text(color = "#dbeafe", size = 12),
+      axis.title = element_text(color = "#f4f7ff", size = 13),
+      plot.background = element_rect(fill = "#0b1324", color = NA),
+      panel.background = element_rect(fill = "#0b1324", color = NA)
+    )
+)
+```
+
+This bar chart summarizes the main classification metrics on the test set. It highlights the balance between correctly identifying eccentric cases and avoiding false positives.
+
+```{r}
+#| echo: false
+#| warning: false
+class_balance <- df_clean %>%
+  mutate(
+    class_label = factor(is_eccentric, levels = c(0, 1), labels = c("Circular", "Eccentric"))
+  ) %>%
+  count(class_label) %>%
+  mutate(proportion = n / sum(n))
+
+print(
+  ggplot(class_balance, aes(x = class_label, y = proportion, fill = class_label)) +
+    geom_col(alpha = 0.95) +
+    geom_text(aes(label = scales::percent(proportion, accuracy = 0.1)), vjust = -0.4, size = 3.5, color = "#f4f7ff") +
+    scale_y_continuous(limits = c(0, 1), labels = scales::percent_format(accuracy = 1)) +
+    scale_fill_manual(values = c("#6d7cff", "#5ec9ff")) +
+    labs(
+      title = "Class balance in the cleaned dataset",
+      x = NULL,
+      y = "Proportion of observations"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(
+      text = element_text(family = "Segoe UI", color = "#f4f7ff"),
+      panel.grid.major.y = element_line(color = "#2e3a58", linewidth = 0.7),
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(face = "bold", size = 16, color = "#f4f7ff"),
+      axis.text = element_text(color = "#dbeafe", size = 12),
+      axis.title = element_text(color = "#f4f7ff", size = 13),
+      plot.background = element_rect(fill = "#0b1324", color = NA),
+      panel.background = element_rect(fill = "#0b1324", color = NA),
+      legend.position = "none"
+    )
+)
+```
+
+In the cleaned dataset, circular orbits are substantially more common than eccentric ones, accounting for about 77% of the observations. That imbalance matters because it means the model is being trained on a sample that is skewed toward the circular class.
+
+```{r}
+#| echo: false
+#| warning: false
+prob_density_plot_data <- test_plot_data %>%
+  mutate(
+    actual_class = factor(is_eccentric, levels = c(0, 1), labels = c("Circular", "Eccentric"))
+  )
+
+print(
+  ggplot(prob_density_plot_data, aes(x = predicted_prob, fill = actual_class)) +
+    geom_density(alpha = 0.55, color = NA) +
+    scale_fill_manual(values = c("#6d7cff", "#5ec9ff")) +
+    scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.25)) +
+    labs(
+      title = "Distribution of predicted probabilities",
+      x = "Predicted probability of eccentricity",
+      y = "Density",
+      fill = "Observed class"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(
+      text = element_text(family = "Segoe UI", color = "#f4f7ff"),
+      panel.grid.major = element_line(color = "#2e3a58", linewidth = 0.7),
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(face = "bold", size = 16, color = "#f4f7ff"),
+      axis.text = element_text(color = "#dbeafe", size = 12),
+      axis.title = element_text(color = "#f4f7ff", size = 13),
+      plot.background = element_rect(fill = "#0b1324", color = NA),
+      panel.background = element_rect(fill = "#0b1324", color = NA),
+      legend.text = element_text(color = "#f4f7ff"),
+      legend.title = element_text(color = "#f4f7ff")
+    )
+)
+```
+
+This density plot compares the predicted probabilities for circular and eccentric cases. A better separation between the two groups would show as two more distinct peaks.
+
+```{r}
+#| echo: false
+#| warning: false
+confusion_data <- test_plot_data %>%
+  mutate(
+    actual_class = factor(is_eccentric, levels = c(0, 1), labels = c("Actual: circular", "Actual: eccentric")),
+    predicted_class_label = factor(predicted_class, levels = c(0, 1), labels = c("Predicted: circular", "Predicted: eccentric"))
+  ) %>%
+  count(actual_class, predicted_class_label) %>%
+  complete(actual_class, predicted_class_label, fill = list(n = 0))
+
+print(
+  ggplot(confusion_data, aes(x = predicted_class_label, y = actual_class, fill = n)) +
+    geom_tile(color = "#0b1324", linewidth = 1) +
+    geom_text(aes(label = n), color = "#f4f7ff", size = 4, fontface = "bold") +
+    scale_fill_gradient(low = "#10162b", high = "#5ec9ff") +
+    labs(
+      title = "Confusion matrix for the test set",
+      x = NULL,
+      y = NULL,
+      fill = "Count"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(
+      text = element_text(family = "Segoe UI", color = "#f4f7ff"),
+      panel.grid = element_blank(),
+      plot.title = element_text(face = "bold", size = 16, color = "#f4f7ff"),
+      axis.text = element_text(color = "#dbeafe", size = 12),
+      axis.title = element_text(color = "#f4f7ff", size = 13),
+      plot.background = element_rect(fill = "#0b1324", color = NA),
+      panel.background = element_rect(fill = "#0b1324", color = NA),
+      legend.text = element_text(color = "#f4f7ff"),
+      legend.title = element_text(color = "#f4f7ff")
+    )
+)
+```
+
+This confusion matrix shows that the model is more successful at identifying circular orbits than eccentric ones, which is consistent with the lower recall seen in the precision-recall curve.
+
 ## Conclusion
 
-This project shows that some broad star-system properties can offer clues about whether a planet is more likely to have an eccentric orbit. In particular, stellar metallicity and surface gravity stand out as the strongest predictors in the model. The interaction term between stellar mass and surface gravity did not add much to the model. The results suggest that basic star-system measurements provide useful information, but they do not fully determine eccentricity.
+### Key takeaways
+- Stellar metallicity and surface gravity stand out as the strongest predictors in the model.
+  - A plausible explanation is that metallicity reflects the chemical enrichment of the protoplanetary disk, which may influence how planets form and how dynamically complex their orbits become.
+  - Surface gravity may proxy for stellar structure and evolutionary context, which can shape the broader architecture of the system in ways that affect orbital eccentricity.
+- The interaction term between stellar mass and surface gravity did not add much to the model.
+  - This may indicate that the separate effects of stellar mass and surface gravity are already largely captured by the main terms, or that the available data do not provide enough resolution to reveal a strong joint effect.
+- The results suggest that basic star-system measurements provide useful information, but they do not fully determine eccentricity.
+  - This is unsurprising, because orbital eccentricity is also governed by dynamical processes such as planet-planet scattering, secular perturbations, and migration history.
+
+### Limitations of the dataset and study
+- The analysis relies on a relatively small and observationally derived dataset, so the conclusions should be viewed as suggestive rather than definitive.
+- The binary outcome is a simplification of a continuous physical phenomenon; some systems near the threshold may be classified somewhat arbitrarily.
+- The model uses only a small set of host-star and system variables, and it does not include other potentially important drivers such as orbital architecture, age, migration history, or planet size.
+- Selection effects in exoplanet surveys may bias the sample toward systems that are easier to detect, which can influence the apparent relationships between stellar properties and orbital eccentricity.
