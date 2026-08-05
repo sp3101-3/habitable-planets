@@ -132,6 +132,10 @@ window.Quarto = {
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./results.html"> 
+<span class="menu-text">Results</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./methodology.html"> 
 <span class="menu-text">Methodology</span></a>
   </li>  
@@ -155,18 +159,10 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#background-context" id="toc-background-context" class="nav-link active" data-scroll-target="#background-context">Background &amp; Context</a></li>
-  <li><a href="#study-overview" id="toc-study-overview" class="nav-link" data-scroll-target="#study-overview">Study overview</a></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
-  <ul class="collapse">
-  <li><a href="#effect-estimates" id="toc-effect-estimates" class="nav-link" data-scroll-target="#effect-estimates">Effect estimates</a></li>
-  <li><a href="#prediction-quality" id="toc-prediction-quality" class="nav-link" data-scroll-target="#prediction-quality">Prediction quality</a></li>
-  </ul></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
-  <ul class="collapse">
-  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways">Key takeaways</a></li>
-  <li><a href="#limitations-of-the-dataset-and-study" id="toc-limitations-of-the-dataset-and-study" class="nav-link" data-scroll-target="#limitations-of-the-dataset-and-study">Limitations of the dataset and study</a></li>
-  </ul></li>
+  <li><a href="#finding-earth-2.0" id="toc-finding-earth-2.0" class="nav-link active" data-scroll-target="#finding-earth-2.0">Finding Earth 2.0</a></li>
+  <li><a href="#background-context" id="toc-background-context" class="nav-link" data-scroll-target="#background-context">Background &amp; context</a></li>
+  <li><a href="#study-goals" id="toc-study-goals" class="nav-link" data-scroll-target="#study-goals">Study goals</a></li>
+  <li><a href="#covariates-used-in-the-model" id="toc-covariates-used-in-the-model" class="nav-link" data-scroll-target="#covariates-used-in-the-model">Covariates used in the model</a></li>
   </ul>
 </nav>
     </div>
@@ -192,122 +188,65 @@ window.Quarto = {
 </header>
 
 
-<section id="background-context" class="level3">
-<h3 class="anchored" data-anchor-id="background-context">Background &amp; Context</h3>
-<p>Eccentric orbits matter because they can make a planet’s climate less stable over time, which can reduce the long-term prospects for liquid water and a sustained habitable surface environment. In a nearly circular orbit, the planet receives a comparatively steady flux of stellar energy, so seasonal forcing is modest. In an eccentric orbit, the planet moves closer to and farther from its host star over the course of the year, and the incoming flux can vary substantially. In a simple orbital approximation, the time-averaged flux scales roughly as <span class="math inline">\(F \propto \frac{L_\star}{a^2\sqrt{1-e^2}}\)</span>, so even moderate eccentricity can amplify seasonal and climatic variability. For habitability studies, that matters because large swings in temperature and water availability can make long-term surface stability more difficult to maintain.</p>
+<section id="finding-earth-2.0" class="level2 hero-panel">
+<h2 class="anchored" data-anchor-id="finding-earth-2.0">Finding Earth 2.0</h2>
+<p>A data-driven lens on orbital eccentricity and planetary habitability.</p>
+<p>Eccentric orbits matter because they can make a planet’s climate less stable over time, which can reduce the long-term prospects for liquid water and sustained surface habitability.</p>
+<div class="hero-actions">
+<p><a href="./results.html" class="hero-link">See model outputs and plots</a> <a href="./methodology.html" class="hero-link">Model training and methodology</a></p>
+</div>
 </section>
-<section id="study-overview" class="level3">
-<h3 class="anchored" data-anchor-id="study-overview">Study overview</h3>
-<ul>
-<li>The goal is to classify exoplanet orbits as eccentric or circular using a small set of stellar and planetary predictors.</li>
-<li>The analysis uses a logistic regression model trained on one subset of the data and evaluated on a separate test set.</li>
-<li>The main question is whether a few broad stellar properties carry enough signal to distinguish the two classes.</li>
-<li>Through this study, I hope to build a reliable model for filtering exoplanets by orbital eccentricity, allowing astronomers to focus on planets with low-eccentricity orbits and thus better candidates for habitability.</li>
-</ul>
-<p>Further details on the construction and training of the model can be found under the Methodology tab.</p>
+<div class="orbit-glow">
+
+</div>
+<section id="background-context" class="level2">
+<h2 class="anchored" data-anchor-id="background-context">Background &amp; context</h2>
+<p>In a nearly circular orbit, a planet receives a comparatively steady flux of stellar energy, so seasonal forcing is modest. In an eccentric orbit, the planet moves closer to and farther from its host star over the course of the year, and the incoming flux can vary substantially.</p>
+<p>In a simple orbital approximation, the time-averaged flux scales roughly as <span class="math inline">\(F \propto \frac{L_\star}{a^2\sqrt{1-e^2}}\)</span>, so even moderate eccentricity can amplify seasonal and climatic variability. For habitability studies, that matters because large swings in temperature and water availability can make long-term surface stability more difficult to maintain.</p>
 </section>
-<section id="results" class="level2">
-<h2 class="anchored" data-anchor-id="results">Results</h2>
-<section id="effect-estimates" class="level3">
-<h3 class="anchored" data-anchor-id="effect-estimates">Effect estimates</h3>
+<section id="study-goals" class="level2">
+<h2 class="anchored" data-anchor-id="study-goals">Study goals</h2>
+<div class="kpi-row">
+<section id="outcome-variable" class="level3 kpi-card">
+<h3 class="anchored" data-anchor-id="outcome-variable">Outcome variable</h3>
+<p>The outcome is a binary indicator of orbital eccentricity:</p>
 <ul>
-<li>Stellar metallicity: odds ratio of 2.40, with a 95% interval from 1.55 to 3.75.</li>
-<li>Stellar surface gravity: odds ratio of 0.31, with a 95% interval from 0.22 to 0.43.</li>
-</ul>
-<p>The figure below summarizes the estimated effects of the variables in the model. Values above 1 indicate higher odds of an eccentric orbit, while values below 1 indicate lower odds, holding the other variables fixed. These estimates are the same values reported in the odds-ratio table on the methodology page.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Metallicity and surface gravity were the clearest predictors in this model.</p>
-</section>
-<section id="prediction-quality" class="level3">
-<h3 class="anchored" data-anchor-id="prediction-quality">Prediction quality</h3>
-<p>The next figures focus on how the model separates the two classes and how well it performs on the held-out test set. In this setting, the precision-recall curve is especially informative because it highlights the balance between recovering genuinely eccentric systems and avoiding a large number of false alarms.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>This precision-recall curve summarizes the trade-off between precision and recall across a range of thresholds. The curve indicates that the model has limited ability to identify eccentric cases while avoiding false positives.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>This bar chart summarizes the main classification metrics on the test set. It highlights the balance between correctly identifying eccentric cases and avoiding false positives.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>In the cleaned dataset, circular orbits are substantially more common than eccentric ones, accounting for about 77% of the observations. That imbalance matters because it means the model is being trained on a sample that is skewed toward the circular class.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>This density plot compares the predicted probabilities for circular and eccentric cases. A better separation between the two groups would show as two more distinct peaks.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>This confusion matrix shows that the model is more successful at identifying circular orbits than eccentric ones, which is consistent with the lower recall seen in the precision-recall curve.</p>
-</section>
-</section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<section id="key-takeaways" class="level3">
-<h3 class="anchored" data-anchor-id="key-takeaways">Key takeaways</h3>
-<ul>
-<li>Stellar metallicity and surface gravity stand out as the strongest predictors in the model.
-<ul>
-<li>A plausible explanation is that metallicity reflects the chemical enrichment of the protoplanetary disk, which may influence how planets form and how dynamically complex their orbits become.</li>
-<li>Surface gravity may proxy for stellar structure and evolutionary context, which can shape the broader architecture of the system in ways that affect orbital eccentricity.</li>
-</ul></li>
-<li>The results suggest that basic star-system measurements provide useful information, but they do not fully determine eccentricity.
-<ul>
-<li>This is unsurprising, because orbital eccentricity is also governed by dynamical processes such as planet-planet scattering, secular perturbations, and migration history.</li>
-</ul></li>
+<li><strong>Eccentric</strong> orbit: <code>pl_orbeccen &gt;= 0.1</code></li>
+<li><strong>Circular</strong> orbit: <code>pl_orbeccen &lt; 0.1</code></li>
 </ul>
 </section>
-<section id="limitations-of-the-dataset-and-study" class="level3">
-<h3 class="anchored" data-anchor-id="limitations-of-the-dataset-and-study">Limitations of the dataset and study</h3>
-<ul>
-<li>The analysis relies on a relatively small and observationally derived dataset, so the conclusions should be viewed as suggestive rather than definitive.</li>
-<li>The binary outcome is a simplification of a continuous physical phenomenon; some systems near the threshold may be classified somewhat arbitrarily.</li>
-<li>The model uses only a small set of host-star and system variables, and it does not include other potentially important drivers such as orbital architecture, age, migration history, or planet size.</li>
-<li>Selection effects in exoplanet surveys may bias the sample toward systems that are easier to detect, which can influence the apparent relationships between stellar properties and orbital eccentricity.</li>
-</ul>
+<section id="modeling-goal" class="level3 kpi-card">
+<h3 class="anchored" data-anchor-id="modeling-goal">Modeling goal</h3>
+<p>Determine if exoplanet orbital eccentricity can be accurately modeled using only fundamental star system properties.</p>
+</section>
+</div>
+</section>
+<section id="covariates-used-in-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="covariates-used-in-the-model">Covariates used in the model</h2>
+<div class="covariate-grid">
+<section id="st_met-stellar-metallicity" class="level3 covariate-card">
+<h3 class="anchored" data-anchor-id="st_met-stellar-metallicity"><code>st_met</code> (stellar metallicity)</h3>
+<p>Tracks the abundance of elements heavier than hydrogen and helium.</p>
+</section>
+<section id="st_mass-stellar-mass" class="level3 covariate-card">
+<h3 class="anchored" data-anchor-id="st_mass-stellar-mass"><code>st_mass</code> (stellar mass)</h3>
+<p>Represents the host star’s mass and gravitational scale.</p>
+</section>
+<section id="st_teff-stellar-effective-temperature" class="level3 covariate-card">
+<h3 class="anchored" data-anchor-id="st_teff-stellar-effective-temperature"><code>st_teff</code> (stellar effective temperature)</h3>
+<p>Captures the star’s radiative environment.</p>
+</section>
+<section id="st_logg-stellar-surface-gravity" class="level3 covariate-card">
+<h3 class="anchored" data-anchor-id="st_logg-stellar-surface-gravity"><code>st_logg</code> (stellar surface gravity)</h3>
+<p>Measures how strongly the stellar photosphere is bound, reflecting stellar structure.</p>
+</section>
+<section id="sy_pnum-number-of-planets-in-system" class="level3 covariate-card">
+<h3 class="anchored" data-anchor-id="sy_pnum-number-of-planets-in-system"><code>sy_pnum</code> (number of planets in system)</h3>
+<p>Represents system multiplicity and potential for dynamical interactions.</p>
+</section>
+</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
