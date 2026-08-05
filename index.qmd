@@ -4,7 +4,7 @@ execute:
   echo: false
 ---
 
-This project uses a binary logistic regression model to explore whether a handful of stellar and planetary features can help identify systems that are more likely to host eccentric orbits. Eccentric orbits matter because they often make a planet’s climate less stable over time, which can reduce the long-term chances that liquid water and a habitable environment would persist. In that sense, eccentricity is often treated as a warning sign for habitability.
+Eccentric orbits matter because they often make a planet’s climate less stable over time, which can reduce the long-term chances that liquid water and a habitable environment would persist. In that sense, eccentricity is often treated as a warning sign for habitability. To that end, this data analysis project involves the use of a binary logistic regression model to explore whether fundamental stellar system properties can help predict whether exoplanet orbits are eccentric or not. Through this predictive model, I hoped to construct a reliable way to sort exoplanets by orbital eccentricity, allowing astronomers to focus on exoplanets with circular orbits that are more likely to be habitable.
 
 Further details on the construction and training of the model can be found under the Methodology tab.
 
@@ -29,7 +29,8 @@ if ("janitor" %in% rownames(installed.packages())) {
 
 df_clean <- raw_data %>%
   mutate(
-    is_eccentric = as.integer(pl_orbeccen >= 0.1)
+    is_eccentric = as.integer(pl_orbeccen >= 0.1),
+    st_mass_logg = st_mass * st_logg
   ) %>%
   select(
     is_eccentric,
@@ -37,6 +38,7 @@ df_clean <- raw_data %>%
     st_mass,
     st_teff,
     st_logg,
+    st_mass_logg,
     sy_pnum
   ) %>%
   drop_na()
@@ -47,7 +49,7 @@ train_data <- df_clean[train_idx, ]
 test_data <- df_clean[-train_idx, ]
 
 logit_model <- glm(
-  is_eccentric ~ st_met + st_mass + st_teff + st_logg + sy_pnum,
+  is_eccentric ~ st_met + st_mass + st_teff + st_logg + st_mass_logg + sy_pnum,
   data = train_data,
   family = binomial(link = "logit")
 )
@@ -61,7 +63,7 @@ test_plot_data <- test_data %>%
   )
 ```
 
-The figure below shows the estimated odds ratios for the covariates in the model. Values above 1 mean a predictor is associated with higher odds of an eccentric orbit, while values below 1 mean lower odds, holding the other variables fixed.
+The figure below summarizes the estimated effects of the variables in the model. Values above 1 indicate higher odds of an eccentric orbit, while values below 1 indicate lower odds, holding the other variables fixed. The estimated odds ratio for metallicity is about 2.39, with a 95% confidence interval from about 1.55 to 3.54. The estimated odds ratio for surface gravity is about 0.35, with a 95% confidence interval from about 0.29 to 0.44. I also included an interaction term between stellar mass and surface gravity to test whether their combined effect differs from their separate effects.
 
 ```{r}
 #| echo: false
@@ -81,6 +83,7 @@ odds_results <- as.data.frame(exp(cbind(OR = coef(logit_model), confint(logit_mo
       st_mass = "Stellar mass",
       st_teff = "Stellar temperature",
       st_logg = "Stellar surface gravity",
+      st_mass_logg = "Stellar mass × surface gravity",
       sy_pnum = "Planets in system"
     ),
     term = factor(
@@ -90,6 +93,7 @@ odds_results <- as.data.frame(exp(cbind(OR = coef(logit_model), confint(logit_mo
         "Stellar mass",
         "Stellar temperature",
         "Stellar surface gravity",
+        "Stellar mass × surface gravity",
         "Planets in system"
       ))
     )
@@ -122,7 +126,7 @@ print(
 )
 ```
 
-Metallicity and surface gravity appear to be the clearest predictors in this model. The estimated odds ratio for metallicity is about 2.36, with a 95% confidence interval from about 1.55 to 3.58, and the surface gravity odds ratio is about 0.30, with a 95% confidence interval from about 0.23 to 0.37. Both intervals exclude 1, so these effects are statistically significant. Stellar temperature is also statistically significant, but its effect is very small in practical terms because its odds ratio is essentially 1.00. Stellar mass and the number of planets in the system are not statistically significant at the 0.05 level here.
+Metallicity and surface gravity were the clearest predictors in this model. The interaction term between stellar mass and surface gravity was small and not statistically significant.
 
 ```{r}
 #| echo: false
@@ -171,8 +175,8 @@ print(
 )
 ```
 
-This precision-recall curve shows how well the model finds the eccentric cases without producing too many false alarms. Precision means how many of the cases the model labeled as eccentric were actually eccentric. Recall means how many of the real eccentric cases the model was able to catch. In this project, the curve is only modest, which means the model is not very strong at finding eccentric systems while also avoiding mistakes.
+This precision-recall curve summarizes the trade-off between precision and recall across a range of thresholds. The curve indicates that the model has limited ability to identify eccentric cases while avoiding false positives.
 
 ## Conclusion
 
-This project shows that some broad star-system properties can offer clues about whether a planet is more likely to have an eccentric orbit. In particular, stellar metallicity and surface gravity stand out as having a statistically significant relationship with eccentricity in this model. A simple explanation is that these traits may be tied to the way a star and its planets formed, which can influence the shape and stability of planetary orbits. Still, the model does not do a perfect job because eccentricity is shaped by many other forces as well, including the history of the system, the presence of other planets, and the way planets interact over time. That is why a model built only from basic star-system measurements cannot reliably predict eccentricity on its own.
+This project shows that some broad star-system properties can offer clues about whether a planet is more likely to have an eccentric orbit. In particular, stellar metallicity and surface gravity stand out as the strongest predictors in the model. The interaction term between stellar mass and surface gravity did not add much to the model. The results suggest that basic star-system measurements provide useful information, but they do not fully determine eccentricity.

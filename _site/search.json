@@ -4,28 +4,35 @@
     "href": "index.html",
     "title": "Finding Earth 2.0: Predicting Exoplanet Habitability",
     "section": "",
-    "text": "This project uses a binary logistic regression model to explore whether a handful of stellar and planetary features can help identify systems that are more likely to host eccentric orbits. Eccentric orbits matter because they often make a planet’s climate less stable over time, which can reduce the long-term chances that liquid water and a habitable environment would persist. In that sense, eccentricity is often treated as a warning sign for habitability.\nFurther details on the construction and training of the model can be found under the Methodology tab."
+    "text": "Eccentric orbits matter because they often make a planet’s climate less stable over time, which can reduce the long-term chances that liquid water and a habitable environment would persist. In that sense, eccentricity is often treated as a warning sign for habitability. To that end, this data analysis project involves the use of a binary logistic regression model to explore whether fundamental stellar system properties can help predict whether exoplanet orbits are eccentric or not. Through this predictive model, I hoped to construct a reliable way to sort exoplanets by orbital eccentricity, allowing astronomers to focus on exoplanets with circular orbits that are more likely to be habitable.\nFurther details on the construction and training of the model can be found under the Methodology tab."
+  },
+  {
+    "objectID": "index.html#results",
+    "href": "index.html#results",
+    "title": "Finding Earth 2.0: Predicting Exoplanet Habitability",
+    "section": "Results",
+    "text": "Results\nThe figure below summarizes the estimated effects of the variables in the model. Values above 1 indicate higher odds of an eccentric orbit, while values below 1 indicate lower odds, holding the other variables fixed. The estimated odds ratio for metallicity is about 2.39, with a 95% confidence interval from about 1.55 to 3.54. The estimated odds ratio for surface gravity is about 0.35, with a 95% confidence interval from about 0.29 to 0.44. I also included an interaction term between stellar mass and surface gravity to test whether their combined effect differs from their separate effects.\n\n\n\n\n\n\n\n\n\nMetallicity and surface gravity were the clearest predictors in this model. The interaction term between stellar mass and surface gravity was small and not statistically significant.\n\n\n\n\n\n\n\n\n\nThis precision-recall curve summarizes the trade-off between precision and recall across a range of thresholds. The curve indicates that the model has limited ability to identify eccentric cases while avoiding false positives."
+  },
+  {
+    "objectID": "index.html#conclusion",
+    "href": "index.html#conclusion",
+    "title": "Finding Earth 2.0: Predicting Exoplanet Habitability",
+    "section": "Conclusion",
+    "text": "Conclusion\nThis project shows that some broad star-system properties can offer clues about whether a planet is more likely to have an eccentric orbit. In particular, stellar metallicity and surface gravity stand out as the strongest predictors in the model. The interaction term between stellar mass and surface gravity did not add much to the model. The results suggest that basic star-system measurements provide useful information, but they do not fully determine eccentricity."
   },
   {
     "objectID": "data_wrangling.html",
     "href": "data_wrangling.html",
     "title": "Data Exploration and Wrangling",
     "section": "",
-    "text": "library(tidyverse)\n\n# Read the composite exoplanet data\nnasa_raw &lt;- read_csv(\"PSCompPars_2026.07.29_10.50.24.csv\")\n\n# Quick check on dimensions\nglimpse(nasa_raw)\n\nRows: 6,652\nColumns: 1\n$ `# This file was produced by the NASA Exoplanet Archive  http://exoplanetarchive.ipac.caltech.edu` &lt;chr&gt; …"
+    "text": "library(tidyverse)\n\n# Read the composite exoplanet data\nnasa_raw &lt;- read_csv(\"PSCompPars_2026.07.29_10.50.24.csv\")\n\n# Inspect the data structure\nglimpse(nasa_raw)\n\nRows: 6,652\nColumns: 1\n$ `# This file was produced by the NASA Exoplanet Archive  http://exoplanetarchive.ipac.caltech.edu` &lt;chr&gt; …"
   },
   {
     "objectID": "data_wrangling.html#loading-packages-and-nasa-data",
     "href": "data_wrangling.html#loading-packages-and-nasa-data",
     "title": "Data Exploration and Wrangling",
     "section": "",
-    "text": "library(tidyverse)\n\n# Read the composite exoplanet data\nnasa_raw &lt;- read_csv(\"PSCompPars_2026.07.29_10.50.24.csv\")\n\n# Quick check on dimensions\nglimpse(nasa_raw)\n\nRows: 6,652\nColumns: 1\n$ `# This file was produced by the NASA Exoplanet Archive  http://exoplanetarchive.ipac.caltech.edu` &lt;chr&gt; …"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "This data analysis was done by Avinesh Saravana, a student in David Kane’s Data Science course and astronomy enthusiast.\nThe data used in this project comes from the NASA Exoplanet Archive."
+    "text": "library(tidyverse)\n\n# Read the composite exoplanet data\nnasa_raw &lt;- read_csv(\"PSCompPars_2026.07.29_10.50.24.csv\")\n\n# Inspect the data structure\nglimpse(nasa_raw)\n\nRows: 6,652\nColumns: 1\n$ `# This file was produced by the NASA Exoplanet Archive  http://exoplanetarchive.ipac.caltech.edu` &lt;chr&gt; …"
   },
   {
     "objectID": "methodology.html",
@@ -35,17 +42,10 @@
     "text": "In this analysis, I define a binary outcome for orbital eccentricity and use a small set of stellar and system-level features to prepare a simple classification task. The goal is to build a clean training and testing split so the model can later be fit and evaluated on whether a planet is more likely to be in an eccentric versus circular orbit.\nThis logistic regression model was fit on the training set to estimate how the selected stellar and system features relate to the probability that a planet is eccentric. The coefficients and p-values show which predictors appear most associated with the outcome, while the odds ratios quantify the weight/effect each covariate has on the probability of an orbit being eccentric.\n\n\nTraining rows: 4102 \n\n\nTesting rows: 1026 \n\n\nTraining class breakdown:\n\n\n\n   0    1 \n3159  943 \n\n\nTesting class breakdown:\n\n\n\n  0   1 \n790 236 \n\n\n\nLogistic regression model summary:\n\n\n\nCall:\nglm(formula = is_eccentric ~ st_met + st_mass + st_teff + st_logg + \n    sy_pnum, family = binomial(link = \"logit\"), data = train_data)\n\nCoefficients:\n              Estimate Std. Error z value Pr(&gt;|z|)    \n(Intercept)  4.537e+00  6.073e-01   7.471 7.94e-14 ***\nst_met       8.495e-01  2.109e-01   4.027 5.64e-05 ***\nst_mass     -5.260e-02  1.725e-01  -0.305 0.760373    \nst_teff     -2.029e-04  5.961e-05  -3.403 0.000666 ***\nst_logg     -1.043e+00  1.193e-01  -8.745  &lt; 2e-16 ***\nsy_pnum     -6.172e-02  3.391e-02  -1.820 0.068726 .  \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n(Dispersion parameter for binomial family taken to be 1)\n\n    Null deviance: 4423.1  on 4101  degrees of freedom\nResidual deviance: 4231.1  on 4096  degrees of freedom\nAIC: 4243.1\n\nNumber of Fisher Scoring iterations: 4\n\n\n\nOdds ratios with 95% confidence intervals:\n\n\n                    OR      2.5 %      97.5 %\n(Intercept) 93.4436631 28.7844951 312.6942578\nst_met       2.3384146  1.5480326   3.5397116\nst_mass      0.9487619  0.6824269   1.3625715\nst_teff      0.9997971  0.9996782   0.9999126\nst_logg      0.3522779  0.2781759   0.4448599\nsy_pnum      0.9401483  0.8788457   1.0038519"
   },
   {
-    "objectID": "index.html#conclusion",
-    "href": "index.html#conclusion",
-    "title": "Finding Earth 2.0: Predicting Exoplanet Habitability",
-    "section": "Conclusion",
-    "text": "Conclusion\nThis project shows that some broad star-system properties can offer clues about whether a planet is more likely to have an eccentric orbit. In particular, stellar metallicity and surface gravity stand out as having a statistically significant relationship with eccentricity in this model. A simple explanation is that these traits may be tied to the way a star and its planets formed, which can influence the shape and stability of planetary orbits. Still, the model does not do a perfect job because eccentricity is shaped by many other forces as well, including the history of the system, the presence of other planets, and the way planets interact over time. That is why a model built only from basic star-system measurements cannot reliably predict eccentricity on its own."
-  },
-  {
-    "objectID": "index.html#results",
-    "href": "index.html#results",
-    "title": "Finding Earth 2.0: Predicting Exoplanet Habitability",
-    "section": "Results",
-    "text": "Results\nThe figure below shows the estimated odds ratios for the covariates in the model. Values above 1 mean a predictor is associated with higher odds of an eccentric orbit, while values below 1 mean lower odds, holding the other variables fixed.\n\n\n\n\n\n\n\n\n\nMetallicity and surface gravity appear to be the clearest predictors in this model. The estimated odds ratio for metallicity is about 2.36, with a 95% confidence interval from about 1.55 to 3.58, and the surface gravity odds ratio is about 0.30, with a 95% confidence interval from about 0.23 to 0.37. Both intervals exclude 1, so these effects are statistically significant. Stellar temperature is also statistically significant, but its effect is very small in practical terms because its odds ratio is essentially 1.00. Stellar mass and the number of planets in the system are not statistically significant at the 0.05 level here.\n\n\n\n\n\n\n\n\n\nThis precision-recall curve shows how well the model finds the eccentric cases without producing too many false alarms. Precision means how many of the cases the model labeled as eccentric were actually eccentric. Recall means how many of the real eccentric cases the model was able to catch. In this project, the curve is only modest, which means the model is not very strong at finding eccentric systems while also avoiding mistakes."
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "This data analysis was done by Avinesh Saravana, a student in David Kane’s Data Science course and astronomy enthusiast.\nThe data used in this project comes from the NASA Exoplanet Archive."
   }
 ]
