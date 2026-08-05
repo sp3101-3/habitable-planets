@@ -1,5 +1,6 @@
 ---
-title: "Finding Earth 2.0: Predicting Exoplanet Habitability"
+title: ""
+title-block-style: none
 execute:
   echo: false
 ---
